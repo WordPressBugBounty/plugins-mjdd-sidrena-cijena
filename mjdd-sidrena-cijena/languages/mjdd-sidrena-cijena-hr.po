@@ -1,0 +1,860 @@
+# Translation of MJDD Sidrena i bazna cijena.
+# Default source language: Croatian.
+msgid ""
+msgstr "Project-Id-Version: MJDD Sidrena i bazna cijena\nReport-Msgid-Bugs-To: https://mjdd.hr/\nLanguage: hr\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\nX-Domain: mjdd-sidrena-cijena\n"
+
+msgid "%d proizvoda"
+msgstr "%d proizvoda"
+
+msgid "%d stavki"
+msgstr "%d stavki"
+
+msgid "Adresa"
+msgstr "Adresa"
+
+msgid "Adresa prodajnog objekta"
+msgstr "Adresa prodajnog objekta"
+
+msgid "Akcijska cijena"
+msgstr "Akcijska cijena"
+
+msgid "Arhiva"
+msgstr "Arhiva"
+
+msgid "Arhiva je prazna."
+msgstr "Arhiva je prazna."
+
+msgid "Arhiva je prazna. Datoteke se dodaju svakim dnevnim generiranjem nakon 00:00."
+msgstr "Arhiva je prazna. Datoteke se dodaju svakim dnevnim generiranjem nakon 00:00."
+
+msgid "Arhiva sidrene cijene"
+msgstr "Arhiva sidrene cijene"
+
+msgid "Arhivski cjenik nije mogao biti spremljen."
+msgstr "Arhivski cjenik nije mogao biti spremljen."
+
+msgid "Arhivski cjenik nije pronađen."
+msgstr "Arhivski cjenik nije pronađen."
+
+msgid "Automatski prikaz sidrenih cijena"
+msgstr "Automatski prikaz sidrenih cijena"
+
+msgid "Automatsko popunjavanje novih proizvoda"
+msgstr "Automatsko popunjavanje novih proizvoda"
+
+msgid "Ažurirano %1$s · %2$d proizvoda"
+msgstr "Ažurirano %1$s · %2$d proizvoda"
+
+msgid "Barkod"
+msgstr "Barkod"
+
+msgid "Bazna cijena"
+msgstr "Bazna cijena"
+
+msgid "Bazna cijena je maloprodajna cijena koja je za ovaj proizvod vrijedila na navedeni dan. Ističe se uz aktualnu cijenu radi usporedbe. Nije akcijska cijena niti najniža cijena u zadnjih 30 dana."
+msgstr "Bazna cijena je maloprodajna cijena koja je za ovaj proizvod vrijedila na navedeni dan. Ističe se uz aktualnu cijenu radi usporedbe. Nije akcijska cijena niti najniža cijena u zadnjih 30 dana."
+
+msgid "Bez taksonomije"
+msgstr "Bez taksonomije"
+
+msgid "Brisanje podataka nije uspjelo. Pojedinosti su u zapisniku poslužitelja."
+msgstr "Brisanje podataka nije uspjelo. Pojedinosti su u zapisniku poslužitelja."
+
+msgid "Brisanje podataka…"
+msgstr "Brisanje podataka…"
+
+msgid "Briše ručni cjenik, postavke, javni XML i arhivu, zatim deaktivira dodatak. Ovo se ne može poništiti."
+msgstr "Briše ručni cjenik, postavke, javni XML i arhivu, zatim deaktivira dodatak. Ovo se ne može poništiti."
+
+msgid "Briše sidrene cijene sa svih proizvoda i varijacija, postavke, javni XML i arhivu, zatim deaktivira dodatak. Ovo se ne može poništiti."
+msgstr "Briše sidrene cijene sa svih proizvoda i varijacija, postavke, javni XML i arhivu, zatim deaktivira dodatak. Ovo se ne može poništiti."
+
+msgid "Bulk uvoz"
+msgstr "Bulk uvoz"
+
+msgid "CJM"
+msgstr "CJM"
+
+msgid "CJM dodatak"
+msgstr "CJM dodatak"
+
+msgid "CJM dodatak prefixu"
+msgstr "CJM dodatak prefixu"
+
+msgid "CSV mora imati zaglavlje i barem jedan red."
+msgstr "CSV mora imati zaglavlje i barem jedan red."
+
+msgid "CSV nema redova za uvoz."
+msgstr "CSV nema redova za uvoz."
+
+msgid "CSV nije čitljiv."
+msgstr "CSV nije čitljiv."
+
+msgid "Cijena"
+msgstr "Cijena"
+
+msgid "Cijena na upit"
+msgstr "Cijena na upit"
+
+msgid "Cijena za jedinicu"
+msgstr "Cijena za jedinicu"
+
+msgid "Cijena za jedinicu mjere"
+msgstr "Cijena za jedinicu mjere"
+
+msgid "Cijena za jedinicu mjere (CJM)"
+msgstr "Cijena za jedinicu mjere (CJM)"
+
+msgid "Cjenik"
+msgstr "Cjenik"
+
+msgid "Cjenik - sidrena cijena"
+msgstr "Cjenik - sidrena cijena"
+
+msgid "Cjenik je objavljen po poslovnici."
+msgstr "Cjenik je objavljen po poslovnici."
+
+msgid "Cjenik je prazan."
+msgstr "Cjenik je prazan."
+
+msgid "Cjenik objavljenih proizvoda i varijacija dostupan je javno na fiksnoj adresi (XML ili CSV). Dnevni cron nakon 00:00 regenerira datoteku i sprema je u 30-dnevnu arhivu pod službenim nazivom, da bude dostupna prije 08:00. Oblik, adresa, oznaka i broj pohrane webshopa unose se na kartici Poslovnice. Uz cijene se uvijek izvoze barkod (GTIN/UPC/EAN/ISBN) i dostupno/nedostupno prema zalihi."
+msgstr "Cjenik objavljenih proizvoda i varijacija dostupan je javno na fiksnoj adresi (XML ili CSV). Dnevni cron nakon 00:00 regenerira datoteku i sprema je u 30-dnevnu arhivu pod službenim nazivom, da bude dostupna prije 08:00. Oblik, adresa, oznaka i broj pohrane webshopa unose se na kartici Poslovnice. Uz cijene se uvijek izvoze barkod (GTIN/UPC/EAN/ISBN) i dostupno/nedostupno prema zalihi."
+
+msgid "Cjenik poslovnice nije uključen."
+msgstr "Cjenik poslovnice nije uključen."
+
+msgid "Cjenik se priprema. Osvježite stranicu za nekoliko minuta."
+msgstr "Cjenik se priprema. Osvježite stranicu za nekoliko minuta."
+
+msgid "DISABLE_WP_CRON je uključen, pa 00:05 pokreće system cron koji zove wp-cron.php."
+msgstr "DISABLE_WP_CRON je uključen, pa 00:05 pokreće system cron koji zove wp-cron.php."
+
+msgid "Datoteka je prazna."
+msgstr "Datoteka je prazna."
+
+msgid "Datoteka je veća od 20 MB."
+msgstr "Datoteka je veća od 20 MB."
+
+msgid "Datoteka još nije generirana. Kliknite gumb ili otvorite javnu adresu - cjenik će se tada stvoriti."
+msgstr "Datoteka još nije generirana. Kliknite gumb ili otvorite javnu adresu - cjenik će se tada stvoriti."
+
+msgid "Datoteka nije valjana."
+msgstr "Datoteka nije valjana."
+
+msgid "Datum sidrene"
+msgstr "Datum sidrene"
+
+msgid "Developed by <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Jure Zadravec / MJDD</a>"
+msgstr "Developed by <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">Jure Zadravec / MJDD</a>"
+
+msgid "Dnevni cjenici (XML ili CSV), najviše 30 datoteka po poslovnici."
+msgstr "Dnevni cjenici (XML ili CSV), najviše 30 datoteka po poslovnici."
+
+msgid "Dnevni cjenici (XML ili CSV), najviše 30 zadnjih datoteka."
+msgstr "Dnevni cjenici (XML ili CSV), najviše 30 zadnjih datoteka."
+
+msgid "Dnevno generiranje u 00:05 ovisi o WordPress cronu. On se pokreće tek pri sljedećem zahtjevu koji učita PHP, pa na trgovini s malo prometa ili iza cachea cijele stranice feed može zakasniti nakon 08:00. U wp-config.php postavite DISABLE_WP_CRON na true i iz system crona svakih 5 do 15 minuta pozovite wp-cron.php."
+msgstr "Dnevno generiranje u 00:05 ovisi o WordPress cronu. On se pokreće tek pri sljedećem zahtjevu koji učita PHP, pa na trgovini s malo prometa ili iza cachea cijele stranice feed može zakasniti nakon 08:00. U wp-config.php postavite DISABLE_WP_CRON na true i iz system crona svakih 5 do 15 minuta pozovite wp-cron.php."
+
+msgid "Dodaj poslovnicu"
+msgstr "Dodaj poslovnicu"
+
+msgid "Dodaj proizvod"
+msgstr "Dodaj proizvod"
+
+msgid "Dodaj redak"
+msgstr "Dodaj redak"
+
+msgid "Dodaj stavku"
+msgstr "Dodaj stavku"
+
+msgid "Dodaje se u prefix: Cijena za kg/l"
+msgstr "Dodaje se u prefix: Cijena za kg/l"
+
+msgid "Dodatak automatski prikazuje sidrene cijene ispod aktualnih cijena. Ako je isključeno, koristite shortcode [sidrena-cijena] ili [sidrena-cijena id=\"x\"] za prikaz van loopova. Za samo jedan iznos dodajte prikaz=\"redovna\", prikaz=\"akcijska\" ili prikaz=\"sidrena\"."
+msgstr "Dodatak automatski prikazuje sidrene cijene ispod aktualnih cijena. Ako je isključeno, koristite shortcode [sidrena-cijena] ili [sidrena-cijena id=\"x\"] za prikaz van loopova. Za samo jedan iznos dodajte prikaz=\"redovna\", prikaz=\"akcijska\" ili prikaz=\"sidrena\"."
+
+msgid "Dodatne poslovnice"
+msgstr "Dodatne poslovnice"
+
+msgid "Dodatne stavke"
+msgstr "Dodatne stavke"
+
+msgid "Dok je akcijska cijena aktivna, javni cjenik upisuje akcija. Ovdje upišite drugi naziv (rasprodaja, sezonsko sniženje) ako treba. Prazno polje znači akcija. Bez aktivne akcijske cijene se ne objavljuje."
+msgstr "Dok je akcijska cijena aktivna, javni cjenik upisuje akcija. Ovdje upišite drugi naziv (rasprodaja, sezonsko sniženje) ako treba. Prazno polje znači akcija. Bez aktivne akcijske cijene se ne objavljuje."
+
+msgid "Dopušteni su samo CSV i XML."
+msgstr "Dopušteni su samo CSV i XML."
+
+msgid "Dostupno"
+msgstr "Dostupno"
+
+msgid "Dostupno/nedostupno i barkod se uvijek izvoze. Na webshopu dostupnost prati WooCommerce stanje zalihe. Na drugim poslovnicama dostupnost je ona uvezena u tu poslovnicu, ne zaliha webshopa. Barkod se čita iz polja GTIN, UPC, EAN ili ISBN. Ako proizvod nema barkod, polje ostaje prazno."
+msgstr "Dostupno/nedostupno i barkod se uvijek izvoze. Na webshopu dostupnost prati WooCommerce stanje zalihe. Na drugim poslovnicama dostupnost je ona uvezena u tu poslovnicu, ne zaliha webshopa. Barkod se čita iz polja GTIN, UPC, EAN ili ISBN. Ako proizvod nema barkod, polje ostaje prazno."
+
+msgid "Dostupnost"
+msgstr "Dostupnost"
+
+msgid "Došlo je do pogreške. Pokušajte ponovno."
+msgstr "Došlo je do pogreške. Pokušajte ponovno."
+
+msgid "Dupliciraj"
+msgstr "Dupliciraj"
+
+msgid "Format"
+msgstr "Format"
+
+msgid "Format datuma"
+msgstr "Format datuma"
+
+msgid "Format izvoza"
+msgstr "Format izvoza"
+
+msgid "Generiraj javni cjenik"
+msgstr "Generiraj javni cjenik"
+
+msgid "Gotovo. Prazna polja su popunjena današnjim datumom."
+msgstr "Gotovo. Prazna polja su popunjena današnjim datumom."
+
+msgid "Gotovo. Prazna polja su popunjena."
+msgstr "Gotovo. Prazna polja su popunjena."
+
+msgid "HTML cjenik"
+msgstr "HTML cjenik"
+
+msgid "HTML cjenik nije mogao biti spremljen."
+msgstr "HTML cjenik nije mogao biti spremljen."
+
+msgid "HTML:"
+msgstr "HTML:"
+
+msgid "ID"
+msgstr "ID"
+
+msgid "Interna oznaka, npr. P-01 ili 001. Crtica ostaje. Ulazi u adresu cjenika: /sidrena-cijena-P-01.xml."
+msgstr "Interna oznaka, npr. P-01 ili 001. Crtica ostaje. Ulazi u adresu cjenika: /sidrena-cijena-P-01.xml."
+
+msgid "Interna oznaka, npr. WEB ili 001. Crtica ostaje."
+msgstr "Interna oznaka, npr. WEB ili 001. Crtica ostaje."
+
+msgid "Isti oblik kao redovna cijena. Objavljuje se uz maloprodajnu cijenu. Prazno ako nije primjenjivo."
+msgstr "Isti oblik kao redovna cijena. Objavljuje se uz maloprodajnu cijenu. Prazno ako nije primjenjivo."
+
+msgid "Izvezi cjenik"
+msgstr "Izvezi cjenik"
+
+msgid "Izvezi proizvode bez sidrene cijene"
+msgstr "Izvezi proizvode bez sidrene cijene"
+
+msgid "Izvoz cjenika"
+msgstr "Izvoz cjenika"
+
+msgid "Izvoz cjenika je isti javni CSV ili XML: vrsta, datum, maloprodajna cijena, marka, naziv posebnog oblika, jedinica mjere, cijena jedinice mjere, sidrena cijena, barkod i dostupnost. Uključeni su samo objavljeni proizvodi. Varijacije su zasebni redovi, a dodatne stavke idu na kraj. Izvoz bez sidrene cijene ostaje interni popis (naziv, SKU, redovna, akcijska i sidrena cijena)."
+msgstr "Izvoz cjenika je isti javni CSV ili XML: vrsta, datum, maloprodajna cijena, marka, naziv posebnog oblika, jedinica mjere, cijena jedinice mjere, sidrena cijena, barkod i dostupnost. Uključeni su samo objavljeni proizvodi. Varijacije su zasebni redovi, a dodatne stavke idu na kraj. Izvoz bez sidrene cijene ostaje interni popis (naziv, SKU, redovna, akcijska i sidrena cijena)."
+
+msgid "Javni cjenici poslovnica su generirani."
+msgstr "Javni cjenici poslovnica su generirani."
+
+msgid "Javni cjenik"
+msgstr "Javni cjenik"
+
+msgid "Javni cjenik (XML/CSV)"
+msgstr "Javni cjenik (XML/CSV)"
+
+msgid "Javni cjenik je generiran."
+msgstr "Javni cjenik je generiran."
+
+msgid "Javni cjenik još ne postoji."
+msgstr "Javni cjenik još ne postoji."
+
+msgid "Javni cjenik još nije generiran."
+msgstr "Javni cjenik još nije generiran."
+
+msgid "Javni cjenik još nije generiran. Dok datoteka ne postoji, HTML stranica i shortcode prikazuju da se cjenik priprema."
+msgstr "Javni cjenik još nije generiran. Dok datoteka ne postoji, HTML stranica i shortcode prikazuju da se cjenik priprema."
+
+msgid "Javni cjenik nije mogao biti generiran."
+msgstr "Javni cjenik nije mogao biti generiran."
+
+msgid "Javni cjenik nije mogao biti generiran. Provjerite dozvole mape uploads."
+msgstr "Javni cjenik nije mogao biti generiran. Provjerite dozvole mape uploads."
+
+msgid "Javni cjenik nije mogao biti spremljen."
+msgstr "Javni cjenik nije mogao biti spremljen."
+
+msgid "Javni cjenik se već generira."
+msgstr "Javni cjenik se već generira."
+
+msgid "Javni cjenik webshopa: /sidrena-cijena.xml (ili .csv). Svi objavljeni proizvodi i ručni retci bez oznake poslovnice."
+msgstr "Javni cjenik webshopa: /sidrena-cijena.xml (ili .csv). Svi objavljeni proizvodi i ručni retci bez oznake poslovnice."
+
+msgid "Jedinica mjere"
+msgstr "Jedinica mjere"
+
+msgid "Jedinica u javnom cjeniku, npr. kg, l ili kom. Prazno ako proizvod nema cijenu za jedinicu mjere."
+msgstr "Jedinica u javnom cjeniku, npr. kg, l ili kom. Prazno ako proizvod nema cijenu za jedinicu mjere."
+
+msgid "Kad je uključeno, uz sidrenu cijenu pojavljuje se CJM: na Woo proizvodu i varijaciji, i na svakom retku kartice Proizvodi ili Dodatne stavke. Uključite ga na retku i upišite nastavak (npr. \"za kg/l\") pa se prikazuje \"Cijena za kg/l (10.09.2026.)\". Ista mjerna jedinica ide u javni XML/CSV i u HTML tablicu."
+msgstr "Kad je uključeno, uz sidrenu cijenu pojavljuje se CJM: na Woo proizvodu i varijaciji, i na svakom retku kartice Proizvodi ili Dodatne stavke. Uključite ga na retku i upišite nastavak (npr. \"za kg/l\") pa se prikazuje \"Cijena za kg/l (10.09.2026.)\". Ista mjerna jedinica ide u javni XML/CSV i u HTML tablicu."
+
+msgid "Kako je napisano, npr. prodavaonica, webshop ili servis."
+msgstr "Kako je napisano, npr. prodavaonica, webshop ili servis."
+
+msgid "Kako je napisano, npr. webshop ili prodavaonica."
+msgstr "Kako je napisano, npr. webshop ili prodavaonica."
+
+msgid "Kopiraj"
+msgstr "Kopiraj"
+
+msgid "Kopiraj shortcode"
+msgstr "Kopiraj shortcode"
+
+msgid "Kopirano"
+msgstr "Kopirano"
+
+msgid "Koristi se kad proizvod nema pojam u taksonomiji, i kad je polje Marka na ručnom retku prazno. Ručni retci (Proizvodi ili Dodatne stavke) imaju vlastito polje."
+msgstr "Koristi se kad proizvod nema pojam u taksonomiji, i kad je polje Marka na ručnom retku prazno. Ručni retci (Proizvodi ili Dodatne stavke) imaju vlastito polje."
+
+msgid "Koristi se u odabranom formatu na izlogu. Za FMCG (hrana, piće, kozmetika…) na proizvodu upišite 02.05.2025."
+msgstr "Koristi se u odabranom formatu na izlogu. Za FMCG (hrana, piće, kozmetika…) na proizvodu upišite 02.05.2025."
+
+msgid "Kriteriji"
+msgstr "Kriteriji"
+
+msgid "Maloprodajna cijena"
+msgstr "Maloprodajna cijena"
+
+msgid "Mapa arhive nije mogla biti stvorena."
+msgstr "Mapa arhive nije mogla biti stvorena."
+
+msgid "Mapa za javni cjenik nije mogla biti stvorena."
+msgstr "Mapa za javni cjenik nije mogla biti stvorena."
+
+msgid "Mapa za uvoz nije mogla biti stvorena."
+msgstr "Mapa za uvoz nije mogla biti stvorena."
+
+msgid "Marka"
+msgstr "Marka"
+
+msgid "Mijenja samo trenutni javni link i nova generiranja. Datoteke u arhivi ostaju u formatu u kojem su nastale."
+msgstr "Mijenja samo trenutni javni link i nova generiranja. Datoteke u arhivi ostaju u formatu u kojem su nastale."
+
+msgid "Mjerna jedinica"
+msgstr "Mjerna jedinica"
+
+msgid "Na prelazak miša preko sidrene cijene."
+msgstr "Na prelazak miša preko sidrene cijene."
+
+msgid "Nacrti pravilnika o baznoj cijeni i o objavi cjenika u savjetovanju su do 13. studenoga 2026. Sljedeća inačica, nakon objave u Narodnim novinama, dodaje neto količinu, stupac bazna_cijena, iznimke i objavu cjenika samo kad se cijena promijeni. Do tada ostaje dnevno generiranje nakon 00:05 i obnova datoteke oko minute nakon promjene cijene, akcije ili zalihe."
+msgstr "Nacrti pravilnika o baznoj cijeni i o objavi cjenika u savjetovanju su do 13. studenoga 2026. Sljedeća inačica, nakon objave u Narodnim novinama, dodaje neto količinu, stupac bazna_cijena, iznimke i objavu cjenika samo kad se cijena promijeni. Do tada ostaje dnevno generiranje nakon 00:05 i obnova datoteke oko minute nakon promjene cijene, akcije ili zalihe."
+
+msgid "Natpis uz cijenu je „%1$s”. Kupac ga može zamijeniti s cijenom koju plaća. Zakonski naziv je bazna cijena. Predloženi natpis: %2$s."
+msgstr "Natpis uz cijenu je „%1$s”. Kupac ga može zamijeniti s cijenom koju plaća. Zakonski naziv je bazna cijena. Predloženi natpis: %2$s."
+
+msgid "Natrag na %s"
+msgstr "Natrag na %s"
+
+msgid "Naziv"
+msgstr "Naziv"
+
+msgid "Naziv posebnog oblika prodaje"
+msgstr "Naziv posebnog oblika prodaje"
+
+msgid "Ne uvozi"
+msgstr "Ne uvozi"
+
+msgid "Nedostupno"
+msgstr "Nedostupno"
+
+msgid "Nema proizvoda koji odgovaraju pretrazi."
+msgstr "Nema proizvoda koji odgovaraju pretrazi."
+
+msgid "Nemate dozvolu za uvoz."
+msgstr "Nemate dozvolu za uvoz."
+
+msgid "Nijedna poslovnica nema dodane proizvode. Dodajte proizvode na kartici Poslovnice."
+msgstr "Nijedna poslovnica nema dodane proizvode. Dodajte proizvode na kartici Poslovnice."
+
+msgid "Oblik prodajnog objekta"
+msgstr "Oblik prodajnog objekta"
+
+msgid "Oblik, adresa, oznaka i broj pohrane za webshop i dodatne poslovnice unose se na kartici Poslovnice."
+msgstr "Oblik, adresa, oznaka i broj pohrane za webshop i dodatne poslovnice unose se na kartici Poslovnice."
+
+msgid "Obrada je stala. Pritisnite gumb ponovno za nastavak od istog mjesta. Već upisane cijene se ne prepisuju."
+msgstr "Obrada je stala. Pritisnite gumb ponovno za nastavak od istog mjesta. Već upisane cijene se ne prepisuju."
+
+msgid "Obrada…"
+msgstr "Obrada…"
+
+msgid "Obrada… %1$s / %2$s"
+msgstr "Obrada… %1$s / %2$s"
+
+msgid "Obriši sve podatke i deaktiviraj"
+msgstr "Obriši sve podatke i deaktiviraj"
+
+msgid "Odaberite CSV ili XML"
+msgstr "Odaberite CSV ili XML"
+
+msgid "Odaberite CSV ili XML datoteku."
+msgstr "Odaberite CSV ili XML datoteku."
+
+msgid "Odaberite SKU polje"
+msgstr "Odaberite SKU polje"
+
+msgid "Odaberite poslovnicu"
+msgstr "Odaberite poslovnicu"
+
+msgid "Odaberite poslovnicu u koju se uvozi."
+msgstr "Odaberite poslovnicu u koju se uvozi."
+
+msgid "Odaberite stupac za SKU ili ID."
+msgstr "Odaberite stupac za SKU ili ID."
+
+msgid "Odaberite stupac/čvor koji sadrži SKU."
+msgstr "Odaberite stupac/čvor koji sadrži SKU."
+
+msgid "Odabrana poslovnica ne postoji."
+msgstr "Odabrana poslovnica ne postoji."
+
+msgid "Odabrani ID stupac ne postoji u datoteci."
+msgstr "Odabrani ID stupac ne postoji u datoteci."
+
+msgid "Odabrani SKU stupac ne postoji u datoteci."
+msgstr "Odabrani SKU stupac ne postoji u datoteci."
+
+msgid "Omogući mjernu jedinicu uz sidrenu cijenu"
+msgstr "Omogući mjernu jedinicu uz sidrenu cijenu"
+
+msgid "Ostavi prazno za zadani datum iz postavki. Za hranu, piće, kozmetiku i kućanstvo: 02.05.2025."
+msgstr "Ostavi prazno za zadani datum iz postavki. Za hranu, piće, kozmetiku i kućanstvo: 02.05.2025."
+
+msgid "Otkriven je %s. Sidrena cijena radi s njim: jedan redak sidrene cijene, između aktualne cijene i retka „Najniža cijena u zadnjih 30 dana“."
+msgstr "Otkriven je %s. Sidrena cijena radi s njim: jedan redak sidrene cijene, između aktualne cijene i retka „Najniža cijena u zadnjih 30 dana“."
+
+msgid "Otvori CSV"
+msgstr "Otvori CSV"
+
+msgid "Otvori XML"
+msgstr "Otvori XML"
+
+msgid "Otvori arhivu"
+msgstr "Otvori arhivu"
+
+msgid "Otvori cjenik"
+msgstr "Otvori cjenik"
+
+msgid "Otvori karticu Poslovnice."
+msgstr "Otvori karticu Poslovnice."
+
+msgid "Otvori postavke"
+msgstr "Otvori postavke"
+
+msgid "Ovi retci ispisuju se na dnu HTML cjenika."
+msgstr "Ovi retci ispisuju se na dnu HTML cjenika."
+
+msgid "Ovo popunjava prazne sidrene cijene trenutnom redovnom cijenom i upisuje današnji datum kao referentni (samo ako datum još nije unesen). Proizvodi koji su postojali na 10.09.2026. trebaju ostati na zadanom datumu. Nastaviti?"
+msgstr "Ovo popunjava prazne sidrene cijene trenutnom redovnom cijenom i upisuje današnji datum kao referentni (samo ako datum još nije unesen). Proizvodi koji su postojali na 10.09.2026. trebaju ostati na zadanom datumu. Nastaviti?"
+
+msgid "Ovo će obrisati sve sidrene cijene, ručni cjenik, postavke, javni XML i arhivu, zatim deaktivirati dodatak. Radnja se ne može poništiti. Nastaviti?"
+msgstr "Ovo će obrisati sve sidrene cijene, ručni cjenik, postavke, javni XML i arhivu, zatim deaktivirati dodatak. Radnja se ne može poništiti. Nastaviti?"
+
+msgid "Oznaka prodajnog objekta"
+msgstr "Oznaka prodajnog objekta"
+
+msgid "PHP SimpleXML nije dostupan na poslužitelju."
+msgstr "PHP SimpleXML nije dostupan na poslužitelju."
+
+msgid "Podaci dodatka"
+msgstr "Podaci dodatka"
+
+msgid "Pokreni uvoz"
+msgstr "Pokreni uvoz"
+
+msgid "Popuni prazna polja iz redovne cijene"
+msgstr "Popuni prazna polja iz redovne cijene"
+
+msgid "Popuni prazne sidrene cijene sa današnjim datumom"
+msgstr "Popuni prazne sidrene cijene sa današnjim datumom"
+
+msgid "Popuni praznu sidrenu cijenu i datum pri spremanju"
+msgstr "Popuni praznu sidrenu cijenu i datum pri spremanju"
+
+msgid "Popunjavanje ide u kratkim koracima, s trakom napretka. Ako poslužitelj prekine zahtjev, dodatak nastavlja sam. Već unesena sidrena cijena se ne prepisuje, pa gumb možete ponovno pritisnuti za preostale artikle. Pojedinačnu cijenu i datum možete i ručno upisati na proizvodu, ispod akcijske cijene."
+msgstr "Popunjavanje ide u kratkim koracima, s trakom napretka. Ako poslužitelj prekine zahtjev, dodatak nastavlja sam. Već unesena sidrena cijena se ne prepisuje, pa gumb možete ponovno pritisnuti za preostale artikle. Pojedinačnu cijenu i datum možete i ručno upisati na proizvodu, ispod akcijske cijene."
+
+msgid "Popunjavanje praznih polja"
+msgstr "Popunjavanje praznih polja"
+
+msgid "Poseban oblik"
+msgstr "Poseban oblik"
+
+msgid "Poseban oblik prodaje"
+msgstr "Poseban oblik prodaje"
+
+msgid "Poslovnica"
+msgstr "Poslovnica"
+
+msgid "Poslovnica nema objavljen cjenik."
+msgstr "Poslovnica nema objavljen cjenik."
+
+msgid "Poslovnice"
+msgstr "Poslovnice"
+
+msgid "Postavi „%s”"
+msgstr "Postavi „%s”"
+
+msgid "Postavke"
+msgstr "Postavke"
+
+msgid "Postavke su spremljene."
+msgstr "Postavke su spremljene."
+
+msgid "Predložak ima zaglavlje, jedan primjer proizvoda i jedan primjer usluge (vrsta, datum, poslovnica)."
+msgstr "Predložak ima zaglavlje, jedan primjer proizvoda i jedan primjer usluge (vrsta, datum, poslovnica)."
+
+msgid "Prefix"
+msgstr "Prefix"
+
+msgid "Prefix (datum)"
+msgstr "Prefix (datum)"
+
+msgid "Prefix datum"
+msgstr "Prefix datum"
+
+msgid "Pregled"
+msgstr "Pregled"
+
+msgid "Prethodna"
+msgstr "Prethodna"
+
+msgid "Pretraži cjenik"
+msgstr "Pretraži cjenik"
+
+msgid "Pretraži naziv, SKU, marku ili barkod…"
+msgstr "Pretraži naziv, SKU, marku ili barkod…"
+
+msgid "Preuzmi CSV"
+msgstr "Preuzmi CSV"
+
+msgid "Preuzmi CSV predložak"
+msgstr "Preuzmi CSV predložak"
+
+msgid "Preuzmi XML"
+msgstr "Preuzmi XML"
+
+msgid "Prijenos datoteke nije uspio."
+msgstr "Prijenos datoteke nije uspio."
+
+msgid "Prikaz na trgovini"
+msgstr "Prikaz na trgovini"
+
+msgid "Prikazuje se na prelazak miša preko sidrene cijene."
+msgstr "Prikazuje se na prelazak miša preko sidrene cijene."
+
+msgid "Prikaži tooltip na izlogu"
+msgstr "Prikaži tooltip na izlogu"
+
+msgid "Primjeri: Bazna cijena (10.09.2026.) ili Bazna cijena 10.09.2026. Ako prefix završava na „na“, dobivate Bazna cijena na 10.09.2026. Možete upisati i Sidrena cijena. Prazan prefix uz „Prefix datum“ ispisuje samo datum i iznos."
+msgstr "Primjeri: Bazna cijena (10.09.2026.) ili Bazna cijena 10.09.2026. Ako prefix završava na „na“, dobivate Bazna cijena na 10.09.2026. Možete upisati i Sidrena cijena. Prazan prefix uz „Prefix datum“ ispisuje samo datum i iznos."
+
+msgid "Privremena datoteka uvoza nije mogla biti spremljena."
+msgstr "Privremena datoteka uvoza nije mogla biti spremljena."
+
+msgid "Privremeni uvoz nije čitljiv."
+msgstr "Privremeni uvoz nije čitljiv."
+
+msgid "Proizvod"
+msgstr "Proizvod"
+
+msgid "Proizvodi"
+msgstr "Proizvodi"
+
+msgid "Prvo dodajte proizvode u kartici Proizvodi."
+msgstr "Prvo dodajte proizvode u kartici Proizvodi."
+
+msgid "Radnje"
+msgstr "Radnje"
+
+msgid "Raste jednom po danu. Ponovno generiranje istog dana ne povećava broj. U naziv ide kako je upisan, npr. 104."
+msgstr "Raste jednom po danu. Ponovno generiranje istog dana ne povećava broj. U naziv ide kako je upisan, npr. 104."
+
+msgid "Redovna cijena"
+msgstr "Redovna cijena"
+
+msgid "Redovna maloprodajna cijena na referentni dan (2. 5. 2025. za FMCG, 10. 9. 2026. za ostalo). Unesite je u istom obliku kao redovnu cijenu (s ili bez PDV-a, prema WooCommerce postavci poreza). Ne unosite akcijsku cijenu."
+msgstr "Redovna maloprodajna cijena na referentni dan (2. 5. 2025. za FMCG, 10. 9. 2026. za ostalo). Unesite je u istom obliku kao redovnu cijenu (s ili bez PDV-a, prema WooCommerce postavci poreza). Ne unosite akcijsku cijenu."
+
+msgid "Referentni datum"
+msgstr "Referentni datum"
+
+msgid "Regeneriraj javni cjenik dnevno nakon 00:00"
+msgstr "Regeneriraj javni cjenik dnevno nakon 00:00"
+
+msgid "Ručna marka"
+msgstr "Ručna marka"
+
+msgid "SKU"
+msgstr "SKU"
+
+msgid "SKU nije pronađen"
+msgstr "SKU nije pronađen"
+
+msgid "Sakrij"
+msgstr "Sakrij"
+
+msgid "Samo prazna polja se pune trenutnom redovnom cijenom. Već unesena sidrena cijena se nikad ne prepisuje. Novi proizvodi se mogu puniti automatski pri spremanju ako je to uključeno u postavkama."
+msgstr "Samo prazna polja se pune trenutnom redovnom cijenom. Već unesena sidrena cijena se nikad ne prepisuje. Novi proizvodi se mogu puniti automatski pri spremanju ako je to uključeno u postavkama."
+
+msgid "Samo riječi, bez datuma. Pregled:"
+msgstr "Samo riječi, bez datuma. Pregled:"
+
+msgid "Samo za vas u administraciji. Ne ulazi u naziv datoteke."
+msgstr "Samo za vas u administraciji. Ne ulazi u naziv datoteke."
+
+msgid "Shortcode"
+msgstr "Shortcode"
+
+msgid "Shortcode arhive"
+msgstr "Shortcode arhive"
+
+msgid "Shortcode tablice"
+msgstr "Shortcode tablice"
+
+msgid "Sidrena cijena"
+msgstr "Sidrena cijena"
+
+msgid "Sidrena cijena CJM"
+msgstr "Sidrena cijena CJM"
+
+msgid "Sidrena cijena CJM dodatak"
+msgstr "Sidrena cijena CJM dodatak"
+
+msgid "Sidrena cijena datum"
+msgstr "Sidrena cijena datum"
+
+msgid "Sidrena cijena ne upisuje cijene pri aktivaciji. Prazna polja možete popuniti na kartici Postavke: iz redovne cijene (datum ostaje zadani) ili s današnjim datumom."
+msgstr "Sidrena cijena ne upisuje cijene pri aktivaciji. Prazna polja možete popuniti na kartici Postavke: iz redovne cijene (datum ostaje zadani) ili s današnjim datumom."
+
+msgid "Sidrena cijena: u tijeku je spremanje redovnih cijena proizvoda i varijacija. Već unesene sidrene cijene neće se prepisati."
+msgstr "Sidrena cijena: u tijeku je spremanje redovnih cijena proizvoda i varijacija. Već unesene sidrene cijene neće se prepisati."
+
+msgid "Sljedeća"
+msgstr "Sljedeća"
+
+msgid "Sljedeće automatsko generiranje: %s."
+msgstr "Sljedeće automatsko generiranje: %s."
+
+msgid "Sljedeći broj pohrane"
+msgstr "Sljedeći broj pohrane"
+
+msgid "Sljedeći službeni naziv: %s (primjer Ministarstva: prodavaonica_Ilica 150 Zagreb_P-01_104_01.10.2026_07:45). Na Windows poslužitelju vrijeme ide s crtom, 07-45."
+msgstr "Sljedeći službeni naziv: %s (primjer Ministarstva: prodavaonica_Ilica 150 Zagreb_P-01_104_01.10.2026_07:45). Na Windows poslužitelju vrijeme ide s crtom, 07-45."
+
+msgid "Snimka cijena nije uspjela. Pojedinosti su u zapisniku poslužitelja."
+msgstr "Snimka cijena nije uspjela. Pojedinosti su u zapisniku poslužitelja."
+
+msgid "Spremi"
+msgstr "Spremi"
+
+msgid "Spremi cjenik"
+msgstr "Spremi cjenik"
+
+msgid "Spremi cjenik za shortcode"
+msgstr "Spremi cjenik za shortcode"
+
+msgid "Spremi poslovnice"
+msgstr "Spremi poslovnice"
+
+msgid "Spremi postavke"
+msgstr "Spremi postavke"
+
+msgid "Spremi stavke"
+msgstr "Spremi stavke"
+
+msgid "Starije datoteke"
+msgstr "Starije datoteke"
+
+msgid "Stranica %1$d od %2$d"
+msgstr "Stranica %1$d od %2$d"
+
+msgid "Stranice cjenika"
+msgstr "Stranice cjenika"
+
+msgid "Svaka poslovnica dobiva adresu /sidrena-cijena-OZNAKA.xml (ili .csv) i vlastitu arhivu od 30 datoteka."
+msgstr "Svaka poslovnica dobiva adresu /sidrena-cijena-OZNAKA.xml (ili .csv) i vlastitu arhivu od 30 datoteka."
+
+msgid "Svaki redak postaje stavka javnog cjenika (XML/CSV i HTML). Naziv, redovna cijena i sidrena cijena su obavezni. Vrsta određuje stupce: proizvod ili usluga. Datum ostavite prazan za zadani referentni dan, ili upišite dan prvog uvrštenja. Ako imate više poslovnica, iznad tablice odaberite webshop ili poslovnicu. Dostupnost je padajući izbornik: dostupno ili nedostupno. Prazni retci se ne spremaju. Shortcode [sidrena-cijena id=\"x\"] na bilo kojoj stranici prikazuje cijene iz ovog retka. Za samo jedan iznos dodajte prikaz=\"redovna\", prikaz=\"akcijska\" ili prikaz=\"sidrena\". Cijelu tablicu ubacite shortcodeom [sidrena-cjenik]."
+msgstr "Svaki redak postaje stavka javnog cjenika (XML/CSV i HTML). Naziv, redovna cijena i sidrena cijena su obavezni. Vrsta određuje stupce: proizvod ili usluga. Datum ostavite prazan za zadani referentni dan, ili upišite dan prvog uvrštenja. Ako imate više poslovnica, iznad tablice odaberite webshop ili poslovnicu. Dostupnost je padajući izbornik: dostupno ili nedostupno. Prazni retci se ne spremaju. Shortcode [sidrena-cijena id=\"x\"] na bilo kojoj stranici prikazuje cijene iz ovog retka. Za samo jedan iznos dodajte prikaz=\"redovna\", prikaz=\"akcijska\" ili prikaz=\"sidrena\". Cijelu tablicu ubacite shortcodeom [sidrena-cjenik]."
+
+msgid "Tekst tooltipa"
+msgstr "Tekst tooltipa"
+
+msgid "Tekst, datum i način isticanja uz cijenu proizvoda."
+msgstr "Tekst, datum i način isticanja uz cijenu proizvoda."
+
+msgid "Tooltip"
+msgstr "Tooltip"
+
+msgid "Traži proizvod…"
+msgstr "Traži proizvod…"
+
+msgid "Trenutno %d proizvoda. Javna stranica:"
+msgstr "Trenutno %d proizvoda. Javna stranica:"
+
+msgid "Trenutno %d stavki. Dodaju se na kraj javnog cjenika."
+msgstr "Trenutno %d stavki. Dodaju se na kraj javnog cjenika."
+
+msgid "U XML-u nisu pronađeni ponavljajući zapisi proizvoda."
+msgstr "U XML-u nisu pronađeni ponavljajući zapisi proizvoda."
+
+msgid "U cjenik ove poslovnice ulaze samo odabrani proizvodi."
+msgstr "U cjenik ove poslovnice ulaze samo odabrani proizvodi."
+
+msgid "URL"
+msgstr "URL"
+
+msgid "Uključeno po defaultu. Nakon 00:05 (vremenska zona WordPressa) regenerira se javni cjenik da bude dostupan prije zakonskog roka 08:00, i sprema se u arhivu pod službenim nazivom (max 30 datoteka)."
+msgstr "Uključeno po defaultu. Nakon 00:05 (vremenska zona WordPressa) regenerira se javni cjenik da bude dostupan prije zakonskog roka 08:00, i sprema se u arhivu pod službenim nazivom (max 30 datoteka)."
+
+msgid "Ukloni"
+msgstr "Ukloni"
+
+msgid "Ukloni poslovnicu"
+msgstr "Ukloni poslovnicu"
+
+msgid "Ulica i mjesto ostaju u nazivu, npr. Ilica 150 Zagreb."
+msgstr "Ulica i mjesto ostaju u nazivu, npr. Ilica 150 Zagreb."
+
+msgid "Uploads mapa nije dostupna."
+msgstr "Uploads mapa nije dostupna."
+
+msgid "Usluga"
+msgstr "Usluga"
+
+msgid "Usluge i proizvodi koji nisu u WooCommerceu (npr. po narudžbi ili razred dostave). Naziv, redovna cijena i sidrena cijena su obavezni. Vrsta određuje stupce javnog cjenika. Datum ostavite prazan za zadani referentni dan, ili upišite dan prvog uvrštenja. Ako imate više poslovnica, iznad tablice odaberite webshop ili poslovnicu - retci idu samo u taj cjenik. Dostupnost je padajući izbornik: dostupno ili nedostupno. Shortcode [sidrena-cijena id=\"dX\"] prikazuje cijene tog retka na stranici. Za samo jedan iznos dodajte prikaz=\"redovna\", prikaz=\"akcijska\" ili prikaz=\"sidrena\"."
+msgstr "Usluge i proizvodi koji nisu u WooCommerceu (npr. po narudžbi ili razred dostave). Naziv, redovna cijena i sidrena cijena su obavezni. Vrsta određuje stupce javnog cjenika. Datum ostavite prazan za zadani referentni dan, ili upišite dan prvog uvrštenja. Ako imate više poslovnica, iznad tablice odaberite webshop ili poslovnicu - retci idu samo u taj cjenik. Dostupnost je padajući izbornik: dostupno ili nedostupno. Shortcode [sidrena-cijena id=\"dX\"] prikazuje cijene tog retka na stranici. Za samo jedan iznos dodajte prikaz=\"redovna\", prikaz=\"akcijska\" ili prikaz=\"sidrena\"."
+
+msgid "Uvezi u poslovnicu"
+msgstr "Uvezi u poslovnicu"
+
+msgid "Uvoz je gotov."
+msgstr "Uvoz je gotov."
+
+msgid "Uvoz je istekao. Ponovno učitajte datoteku."
+msgstr "Uvoz je istekao. Ponovno učitajte datoteku."
+
+msgid "Uvoz u tijeku…"
+msgstr "Uvoz u tijeku…"
+
+msgid "Uvoz/Izvoz"
+msgstr "Uvoz/Izvoz"
+
+msgid "Uz aktualnu cijenu ističe se bazna cijena (u odlukama Vlade: dodatna ili sidrena cijena), jasno i odvojeno od cijene koju kupac plaća. Zadani natpis je Bazna cijena. Dodatak je može prikazati automatski ispod cijene ili samo preko shortcodea [sidrena-cijena]."
+msgstr "Uz aktualnu cijenu ističe se bazna cijena (u odlukama Vlade: dodatna ili sidrena cijena), jasno i odvojeno od cijene koju kupac plaća. Zadani natpis je Bazna cijena. Dodatak je može prikazati automatski ispod cijene ili samo preko shortcodea [sidrena-cijena]."
+
+msgid "Uz aktualnu cijenu ističe se bazna cijena (u odlukama Vlade: dodatna ili sidrena cijena). Zadani natpis je Bazna cijena. Unesite stavke u kartici Proizvodi; javna HTML stranica je /sidrena-cjenik, a XML/CSV feed ostaje na /sidrena-cijena.xml ili .csv."
+msgstr "Uz aktualnu cijenu ističe se bazna cijena (u odlukama Vlade: dodatna ili sidrena cijena). Zadani natpis je Bazna cijena. Unesite stavke u kartici Proizvodi; javna HTML stranica je /sidrena-cjenik, a XML/CSV feed ostaje na /sidrena-cijena.xml ili .csv."
+
+msgid "Učitaj i mapiraj polja"
+msgstr "Učitaj i mapiraj polja"
+
+msgid "Učitajte CSV ili XML. Retci se spajaju prvo po SKU-u u odabranoj poslovnici, zatim po ID-u. Ostali se dodaju u taj cjenik. Naziv, redovna i sidrena cijena su obavezni za nove retke. Prazna polja ne brišu postojeće vrijednosti."
+msgstr "Učitajte CSV ili XML. Retci se spajaju prvo po SKU-u u odabranoj poslovnici, zatim po ID-u. Ostali se dodaju u taj cjenik. Naziv, redovna i sidrena cijena su obavezni za nove retke. Prazna polja ne brišu postojeće vrijednosti."
+
+msgid "Učitajte CSV ili XML. Retci se spajaju prvo po SKU-u, a ako SKU ne nađe proizvod onda po postojećem stupcu ID. Uvoz u webshop ažurira Woo proizvod, uključujući zalihu. Uvoz u drugu poslovnicu upisuje dostupnost samo na tu poslovnicu. Ako ni SKU ni ID ne pogode postojeći proizvod, redak postaje ručna stavka te poslovnice."
+msgstr "Učitajte CSV ili XML. Retci se spajaju prvo po SKU-u, a ako SKU ne nađe proizvod onda po postojećem stupcu ID. Uvoz u webshop ažurira Woo proizvod, uključujući zalihu. Uvoz u drugu poslovnicu upisuje dostupnost samo na tu poslovnicu. Ako ni SKU ni ID ne pogode postojeći proizvod, redak postaje ručna stavka te poslovnice."
+
+msgid "Važeći cjenik s sidrenom cijenom: %s"
+msgstr "Važeći cjenik s sidrenom cijenom: %s"
+
+msgid "Veza je prekinuta. Nastavljam automatski…"
+msgstr "Veza je prekinuta. Nastavljam automatski…"
+
+msgid "Vrsta"
+msgstr "Vrsta"
+
+msgid "Webshop"
+msgstr "Webshop"
+
+msgid "Webshop ima vlastiti javni cjenik (XML ili CSV) i 30-dnevnu arhivu. Svaka poslovnica ima zasebnu datoteku: Woo proizvodi koje joj dodate, plus ručne retke (usluge, dostava) s tom oznakom. Dnevni cron nakon 00:00 regenerira webshop i poslovnice. Oblik, adresa, oznaka i broj pohrane unose se na kartici Poslovnice."
+msgstr "Webshop ima vlastiti javni cjenik (XML ili CSV) i 30-dnevnu arhivu. Svaka poslovnica ima zasebnu datoteku: Woo proizvodi koje joj dodate, plus ručne retke (usluge, dostava) s tom oznakom. Dnevni cron nakon 00:00 regenerira webshop i poslovnice. Oblik, adresa, oznaka i broj pohrane unose se na kartici Poslovnice."
+
+msgid "Webshop je zadana poslovnica: oblik, adresa, oznaka i broj pohrane ulaze u službeni naziv datoteke (NN 101/2026). Dodatne poslovnice dodajte ispod. Svaka dobiva vlastiti javni XML ili CSV i 30-dnevnu arhivu. Ručne stavke (usluge, dostava) dodijelite na prvom tabu odabirom poslovnice iznad tablice. Brisanje poslovnice briše i te stavke."
+msgstr "Webshop je zadana poslovnica: oblik, adresa, oznaka i broj pohrane ulaze u službeni naziv datoteke (NN 101/2026). Dodatne poslovnice dodajte ispod. Svaka dobiva vlastiti javni XML ili CSV i 30-dnevnu arhivu. Ručne stavke (usluge, dostava) dodijelite na prvom tabu odabirom poslovnice iznad tablice. Brisanje poslovnice briše i te stavke."
+
+msgid "WooCommerce Lowest Price"
+msgstr "WooCommerce Lowest Price"
+
+msgid "WooCommerce Lowest Price (Igor Kovačić)"
+msgstr "WooCommerce Lowest Price (Igor Kovačić)"
+
+msgid "WooCommerce Lowest Price (Media X %s)"
+msgstr "WooCommerce Lowest Price (Media X %s)"
+
+msgid "WooCommerce nije spreman za generiranje cjenika."
+msgstr "WooCommerce nije spreman za generiranje cjenika."
+
+msgid "WordPress cron taj posao pokreće tek pri sljedećem PHP zahtjevu."
+msgstr "WordPress cron taj posao pokreće tek pri sljedećem PHP zahtjevu."
+
+msgid "XML nema čvorova koje je moguće mapirati."
+msgstr "XML nema čvorova koje je moguće mapirati."
+
+msgid "XML nije valjan."
+msgstr "XML nije valjan."
+
+msgid "Za WooCommerce proizvode marka u cjeniku je naziv pojma iz odabrane taksonomije (npr. product_brand ili pa_marka). Varijacija bez pojma uzima marku roditelja."
+msgstr "Za WooCommerce proizvode marka u cjeniku je naziv pojma iz odabrane taksonomije (npr. product_brand ili pa_marka). Varijacija bez pojma uzima marku roditelja."
+
+msgid "Za proizvode i varijacije dodane nakon aktivacije dodatka. Ako su polja prazna, upisuje se trenutna redovna cijena i današnji datum (vremenska zona WordPressa). Već unesena sidrena cijena i datum se ne prepisuju."
+msgstr "Za proizvode i varijacije dodane nakon aktivacije dodatka. Ako su polja prazna, upisuje se trenutna redovna cijena i današnji datum (vremenska zona WordPressa). Već unesena sidrena cijena i datum se ne prepisuju."
+
+msgid "Za proizvode koji su bili u asortimanu na zadani referentni dan. Datum ostaje zadani iz postavki (npr. 10.09.2026.)."
+msgstr "Za proizvode koji su bili u asortimanu na zadani referentni dan. Datum ostaje zadani iz postavki (npr. 10.09.2026.)."
+
+msgid "Za proizvode stavljene u prodaju nakon referentnog dana. Upisuje redovnu cijenu i današnji datum (vremenska zona WordPressa). Postojeći datum na proizvodu se ne prepisuje."
+msgstr "Za proizvode stavljene u prodaju nakon referentnog dana. Upisuje redovnu cijenu i današnji datum (vremenska zona WordPressa). Postojeći datum na proizvodu se ne prepisuje."
+
+msgid "Za velike kataloge koristite WP-CLI (puno brže od ovog gumba): wp sidrena-cijena fill --dry-run  pa  wp sidrena-cijena fill. Novi proizvodi: wp sidrena-cijena fill --today"
+msgstr "Za velike kataloge koristite WP-CLI (puno brže od ovog gumba): wp sidrena-cijena fill --dry-run  pa  wp sidrena-cijena fill. Novi proizvodi: wp sidrena-cijena fill --today"
+
+msgid "Zadani referentni datum"
+msgstr "Zadani referentni datum"
+
+msgid "Zadnje generiranje: %1$s (%2$d proizvoda/varijacija)."
+msgstr "Zadnje generiranje: %1$s (%2$d proizvoda/varijacija)."
+
+msgid "Zadnje uspješno generiranje (%s) je starije od 26 sati. Javni cjenik možda neće biti spreman prije 08:00."
+msgstr "Zadnje uspješno generiranje (%s) je starije od 26 sati. Javni cjenik možda neće biti spreman prije 08:00."
+
+msgid "Zadnje uspješno generiranje: %s."
+msgstr "Zadnje uspješno generiranje: %s."
+
+msgid "Zadrži sadašnji natpis"
+msgstr "Zadrži sadašnji natpis"
+
+msgid "ažurirano"
+msgstr "ažurirano"
+
+msgid "dodano"
+msgstr "dodano"
+
+msgid "ili ispustite datoteku ovdje"
+msgstr "ili ispustite datoteku ovdje"
+
+msgid "od %s"
+msgstr "od %s"
+
+msgid "preskočeno"
+msgstr "preskočeno"
+
+msgid "redova"
+msgstr "redova"
+
+msgid "za kg/l"
+msgstr "za kg/l"
+
+msgid "Čitanje datoteke…"
+msgstr "Čitanje datoteke…"
+
