@@ -27,6 +27,7 @@ class Sidrena_Cijena_Export {
 	const REWRITE_VERSION  = '12';
 	const REBUILD_LOCK     = 'sidrena_cijena_rebuild_lock';
 	const REBUILD_COOLDOWN = 'sidrena_cijena_rebuild_cooldown';
+	const REBUILD_LOCK_TTL = 600;
 	const CHANGE_DELAY     = 60;
 
 	/**
@@ -42,6 +43,13 @@ class Sidrena_Cijena_Export {
 	 * @var bool
 	 */
 	private $suppress_change_queue = false;
+
+	/**
+	 * Token of the rebuild lock held by this request.
+	 *
+	 * @var string
+	 */
+	private $rebuild_lock_token = '';
 
 	/**
 	 * @return self
@@ -60,7 +68,9 @@ class Sidrena_Cijena_Export {
 	private function __construct() {
 		add_action( 'init', array( $this, 'register_rewrite' ) );
 		add_action( 'admin_init', array( $this, 'maybe_flush_rewrites' ) );
+		add_action( 'init', array( $this, 'prepare_manual_rebuild' ), 1 );
 		add_action( 'init', array( $this, 'sync_daily_schedule' ), 20 );
+		add_action( 'shutdown', array( $this, 'release_owned_rebuild_lock' ) );
 		add_action( 'init', array( $this, 'maybe_ensure_public_xml_on_init' ), 30 );
 		add_action( self::DAILY_HOOK, array( $this, 'run_daily_regenerate' ) );
 		add_action( self::GENERATE_HOOK, array( $this, 'run_queued_generate' ) );
@@ -341,10 +351,7 @@ class Sidrena_Cijena_Export {
 	 */
 
 	public function run_daily_regenerate() {
-		$result = $this->regenerate_public_xml();
-		if ( ! is_wp_error( $result ) ) {
-			$this->archive_public_xml();
-		}
+		$this->run_feed_job( false );
 	}
 
 	/**
@@ -391,9 +398,22 @@ class Sidrena_Cijena_Export {
 	 */
 
 	public function run_queued_generate() {
-		$result = $this->regenerate_public_xml();
-		if ( ! is_wp_error( $result ) ) {
-			$this->archive_public_xml();
+		$this->run_feed_job( false );
+	}
+
+	/**
+	 * Start or continue the batched catalog build, then schedule another slice.
+	 *
+	 * @param bool $force Admin rebuild refreshes files even when prices are unchanged.
+	 */
+	public function run_feed_job( $force = false ) {
+		$job = Sidrena_Cijena_Feed_Job::instance();
+		if ( ! $job->is_running() ) {
+			$job->start( $force );
+		}
+		$job->run_for( 20 );
+		if ( $job->is_running() && ! wp_next_scheduled( self::GENERATE_HOOK ) ) {
+			wp_schedule_single_event( time() + 15, self::GENERATE_HOOK );
 		}
 	}
 
@@ -405,17 +425,170 @@ class Sidrena_Cijena_Export {
 	}
 
 	/**
-	 * One catalog rebuild at a time. The lock expires if the process dies.
+	 * Claim the rebuild before wp-cron on this request can start the queued job.
+	 *
+	 * WordPress runs wp-cron on init priority 10. The Generate button used to
+	 * lose that race and return sidrena_err=busy.
+	 */
+	public function prepare_manual_rebuild() {
+		if ( ! $this->is_manual_rebuild_request() ) {
+			return;
+		}
+
+		delete_transient( self::REBUILD_LOCK );
+
+		if ( ! $this->acquire_rebuild_lock() ) {
+			return;
+		}
+
+		wp_clear_scheduled_hook( self::GENERATE_HOOK );
+	}
+
+	/**
+	 * This admin POST is the Generate public pricelist button.
+	 *
+	 * @return bool
+	 */
+	private function is_manual_rebuild_request() {
+		if ( ! is_admin() || wp_doing_ajax() || wp_doing_cron() ) {
+			return false;
+		}
+
+		if ( ! isset( $_POST['sidrena_cijena_action'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			return false;
+		}
+
+		$action = sanitize_text_field( wp_unslash( $_POST['sidrena_cijena_action'] ) );
+		if ( 'regenerate_public_xml' !== $action ) {
+			return false;
+		}
+
+		if ( ! Sidrena_Cijena_Plugin::current_user_can_manage() ) {
+			return false;
+		}
+
+		$nonce = isset( $_POST['sidrena_cijena_xml_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['sidrena_cijena_xml_nonce'] ) ) : '';
+
+		return (bool) wp_verify_nonce( $nonce, 'sidrena_cijena_save_xml' );
+	}
+
+	/**
+	 * Whether a catalog rebuild is in progress.
+	 *
+	 * @return bool
+	 */
+	public function is_rebuild_locked() {
+		return $this->lock_is_fresh( get_option( self::REBUILD_LOCK, '' ) );
+	}
+
+	/**
+	 * One catalog rebuild at a time. A dead process cannot hold this forever:
+	 * the option stores a start time and is ignored after REBUILD_LOCK_TTL.
 	 *
 	 * @return bool
 	 */
 	private function acquire_rebuild_lock() {
-		if ( get_transient( self::REBUILD_LOCK ) ) {
+		$held  = get_option( self::REBUILD_LOCK, '' );
+		$owned = $this->lock_token( $held );
+		if ( '' !== $this->rebuild_lock_token && '' !== $owned && strlen( $owned ) === strlen( $this->rebuild_lock_token ) && hash_equals( $this->rebuild_lock_token, $owned ) ) {
+			return true;
+		}
+
+		if ( $this->lock_is_fresh( $held ) ) {
 			return false;
 		}
 
-		set_transient( self::REBUILD_LOCK, 1, 15 * MINUTE_IN_SECONDS );
+		$token = wp_generate_password( 12, false );
+		$value = time() . '|' . $token;
+
+		if ( ! is_string( $held ) || '' === $held ) {
+			if ( ! add_option( self::REBUILD_LOCK, $value, '', 'no' ) ) {
+				return false;
+			}
+		} else {
+			global $wpdb;
+
+			$updated = $wpdb->query(
+				$wpdb->prepare(
+					"UPDATE {$wpdb->options} SET option_value = %s WHERE option_name = %s AND option_value = %s",
+					$value,
+					self::REBUILD_LOCK,
+					$held
+				)
+			);
+			if ( 1 !== (int) $updated ) {
+				return false;
+			}
+
+			wp_cache_delete( self::REBUILD_LOCK, 'options' );
+		}
+
+		$this->rebuild_lock_token = $token;
+		delete_transient( self::REBUILD_LOCK );
+
 		return true;
+	}
+
+	/**
+	 * Drop the lock when this request still owns it. Also runs on shutdown so a
+	 * failed admin handler cannot leave the button busy for the whole TTL.
+	 */
+	public function release_owned_rebuild_lock() {
+		$this->release_rebuild_lock();
+	}
+
+	/**
+	 * Drop the lock when this request still owns it.
+	 */
+	private function release_rebuild_lock() {
+		if ( '' === $this->rebuild_lock_token ) {
+			return;
+		}
+
+		$held  = get_option( self::REBUILD_LOCK, '' );
+		$owned = $this->lock_token( $held );
+		if ( '' !== $owned && strlen( $owned ) === strlen( $this->rebuild_lock_token ) && hash_equals( $this->rebuild_lock_token, $owned ) ) {
+			delete_option( self::REBUILD_LOCK );
+		}
+
+		$this->rebuild_lock_token = '';
+		delete_transient( self::REBUILD_LOCK );
+	}
+
+	/**
+	 * Lock value is "{timestamp}|{token}" and counts only inside the TTL.
+	 *
+	 * @param mixed $held Stored option value.
+	 * @return bool
+	 */
+	private function lock_is_fresh( $held ) {
+		if ( ! is_string( $held ) || '' === $held ) {
+			return false;
+		}
+
+		$parts   = explode( '|', $held, 2 );
+		$started = isset( $parts[0] ) ? (int) $parts[0] : 0;
+		if ( $started <= 0 || ! isset( $parts[1] ) || '' === $parts[1] ) {
+			return false;
+		}
+
+		return ( time() - $started ) < self::REBUILD_LOCK_TTL;
+	}
+
+	/**
+	 * Token half of a lock value.
+	 *
+	 * @param mixed $held Stored option value.
+	 * @return string
+	 */
+	private function lock_token( $held ) {
+		if ( ! is_string( $held ) || false === strpos( $held, '|' ) ) {
+			return '';
+		}
+
+		$parts = explode( '|', $held, 2 );
+
+		return isset( $parts[1] ) ? $parts[1] : '';
 	}
 
 	/**
@@ -505,7 +678,119 @@ class Sidrena_Cijena_Export {
 	 * @return array<string, mixed>|WP_Error
 	 */
 
+	/**
+	 * Write public files from rows already collected in batches.
+	 *
+	 * @param array<int, array<string, string>> $rows          Woo (or full catalog) rows.
+	 * @param bool                              $force_rewrite Refresh live files when the body is unchanged.
+	 * @return array<string, mixed>|WP_Error
+	 */
+	public function publish_collected_public_rows( $rows, $force_rewrite = false ) {
+		if ( function_exists( 'set_time_limit' ) ) {
+			set_time_limit( 300 );
+		}
+
+		$this->suppress_change_queue = true;
+		try {
+			$settings = Sidrena_Cijena_Settings::instance();
+			$rows_api = Sidrena_Cijena_Feed_Rows::instance();
+
+			if ( ! $settings->is_multi_poslovnica() || $settings->is_za_sva_prodajna_mjesta() ) {
+				if ( Sidrena_Cijena_Plugin::woocommerce_active() ) {
+					$rows_api->append_extra_catalog_rows( $rows, false, true, null, null );
+				}
+				if ( $settings->is_za_sva_prodajna_mjesta() ) {
+					Sidrena_Cijena_Feed_Files::instance()->delete_outlet_live_files();
+				}
+				$result = Sidrena_Cijena_Feed_Files::instance()->write_feed_file( $rows, '', $force_rewrite );
+				if ( is_wp_error( $result ) ) {
+					return $result;
+				}
+				if ( $settings->is_za_sva_prodajna_mjesta() ) {
+					$meta = array(
+						'generated' => time(),
+						'count'     => (int) $result['count'],
+						'changed'   => ! empty( $result['changed'] ),
+						'refreshed' => ! empty( $result['refreshed'] ),
+						'format'    => $this->export_format(),
+						'webshop'   => $result,
+						'outlets'   => array(),
+					);
+					update_option( self::PUBLIC_OPTION, $meta );
+
+					return $meta;
+				}
+				update_option( self::PUBLIC_OPTION, $result );
+
+				return $result;
+			}
+
+			$prev   = $this->get_public_meta();
+			$stored = ( isset( $prev['outlets'] ) && is_array( $prev['outlets'] ) ) ? $prev['outlets'] : array();
+			$total  = 0;
+			$latest = 0;
+			$changed   = false;
+			$refreshed = false;
+			$web       = null;
+
+			if ( $settings->publishes_webshop_feed() ) {
+				$web_rows = $rows;
+				$rows_api->append_extra_catalog_rows( $web_rows, false, true, '', array_keys( Sidrena_Cijena_Poslovnice::instance()->assigned_ids_lookup() ) );
+				$web = Sidrena_Cijena_Feed_Files::instance()->write_feed_file( $web_rows, '', $force_rewrite );
+				if ( is_wp_error( $web ) ) {
+					return $web;
+				}
+				$total    += (int) $web['count'];
+				$latest    = max( $latest, (int) $web['generated'] );
+				$changed   = $changed || ! empty( $web['changed'] );
+				$refreshed = $refreshed || ! empty( $web['refreshed'] );
+			}
+
+			foreach ( Sidrena_Cijena_Poslovnice::instance()->with_products() as $outlet ) {
+				$ids      = isset( $outlet['products'] ) ? $outlet['products'] : array();
+				$out_rows = $rows_api->apply_outlet_dostupnost( $rows_api->filter_woo_rows_for_assigned_ids( $rows, $ids ), $outlet['oznaka'] );
+				$rows_api->append_extra_catalog_rows( $out_rows, false, true, $outlet['oznaka'], $ids );
+				$result = $this->write_outlet_feed( $outlet, $stored, $out_rows, $force_rewrite );
+				if ( is_wp_error( $result ) ) {
+					return $result;
+				}
+				$stored[ $outlet['oznaka'] ] = $result;
+				$total    += (int) $result['count'];
+				$latest    = max( $latest, (int) $result['generated'] );
+				$changed   = $changed || ! empty( $result['changed'] );
+				$refreshed = $refreshed || ! empty( $result['refreshed'] );
+			}
+
+			$meta = array(
+				'generated' => $latest > 0 ? $latest : time(),
+				'count'     => $total,
+				'changed'   => $changed,
+				'refreshed' => $refreshed,
+				'format'    => $this->export_format(),
+				'filename'  => isset( $prev['filename'] ) ? $prev['filename'] : '',
+				'pohrana'   => isset( $prev['pohrana'] ) ? $prev['pohrana'] : 0,
+				'outlets'   => $stored,
+			);
+			if ( is_array( $web ) ) {
+				$meta['webshop'] = $web;
+			}
+			update_option( self::PUBLIC_OPTION, $meta );
+
+			return $meta;
+		} finally {
+			$this->suppress_change_queue = false;
+		}
+	}
+
 	public function regenerate_public_xml( $force_rewrite = false ) {
+		if ( function_exists( 'set_time_limit' ) ) {
+			set_time_limit( 300 );
+		}
+
+		if ( Sidrena_Cijena_Feed_Job::instance()->is_running() ) {
+			return new WP_Error( 'sidrena_xml_busy', __( 'Javni cjenik se već generira.', 'mjdd-sidrena-cijena' ) );
+		}
+
 		if ( ! $this->acquire_rebuild_lock() ) {
 			return new WP_Error( 'sidrena_xml_busy', __( 'Javni cjenik se već generira.', 'mjdd-sidrena-cijena' ) );
 		}
@@ -540,7 +825,7 @@ class Sidrena_Cijena_Export {
 			}
 		} finally {
 			$this->suppress_change_queue = false;
-			delete_transient( self::REBUILD_LOCK );
+			$this->release_rebuild_lock();
 		}
 	}
 

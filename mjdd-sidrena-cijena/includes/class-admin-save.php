@@ -225,6 +225,34 @@ class Sidrena_Cijena_Admin_Save {
 	}
 
 	/**
+	 * Start or continue the batched public cjenik build.
+	 */
+	public function ajax_feed_job() {
+		check_ajax_referer( 'sidrena_cijena_feed_job', 'nonce' );
+
+		if ( ! Sidrena_Cijena_Plugin::current_user_can_manage() ) {
+			wp_send_json_error( array( 'message' => 'forbidden' ), 403 );
+		}
+
+		while ( ob_get_level() > 0 ) {
+			ob_end_clean();
+		}
+
+		$op = isset( $_POST['op'] ) ? sanitize_key( wp_unslash( $_POST['op'] ) ) : 'step';
+
+		try {
+			$job = Sidrena_Cijena_Feed_Job::instance();
+			if ( 'start' === $op ) {
+				$job->start( true );
+			}
+			wp_send_json_success( $job->step() );
+		} catch ( Throwable $e ) {
+			Sidrena_Cijena_Plugin::log_exception( $e );
+			wp_send_json_error( array( 'message' => __( 'Javni cjenik nije mogao biti generiran.', 'mjdd-sidrena-cijena' ) ) );
+		}
+	}
+
+	/**
 	 * AJAX batch snapshot from the settings page.
 	 */
 	public function ajax_snapshot() {

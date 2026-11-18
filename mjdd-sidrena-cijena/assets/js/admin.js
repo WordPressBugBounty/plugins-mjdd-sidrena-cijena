@@ -353,6 +353,171 @@
 	}
 
 
+	function bindFeedJob() {
+		var $button = $("#sidrena-cijena-run-feed");
+		var $status = $(".sidrena-cijena-feed-status");
+		var $progress = $("#sidrena-feed-progress");
+		var $bar = $("#sidrena-feed-bar");
+
+		if (!$button.length || typeof sidrenaCijenaAdmin === "undefined") {
+			return;
+		}
+
+		var attempts = 0;
+		var running = false;
+
+		function setProgress(seen, total, done) {
+			var percent = 0;
+			if (done) {
+				percent = 100;
+			} else if (total > 0) {
+				percent = Math.max(0, Math.min(100, Math.round((seen / total) * 100)));
+			}
+			$progress.removeAttr("hidden");
+			$bar.css("width", percent + "%");
+		}
+
+		function paint(data) {
+			var seen = parseInt(data.seen, 10) || 0;
+			var total = parseInt(data.total, 10) || 0;
+			var phase = data.phase || "";
+			var count = parseInt(data.count, 10) || 0;
+
+			if (data.status === "error") {
+				$status.addClass("is-error").text(data.message || sidrenaCijenaAdmin.i18n.error);
+				$button.prop("disabled", false);
+				running = false;
+				return;
+			}
+
+			if (data.done) {
+				setProgress(total || seen, total || seen || 1, true);
+				$status.removeClass("is-error");
+				if (count > 0 && sidrenaCijenaAdmin.i18n.feedDoneCount) {
+					$status.text(sidrenaCijenaAdmin.i18n.feedDoneCount.replace("%d", String(count)));
+				} else {
+					$status.text(sidrenaCijenaAdmin.i18n.feedDone || sidrenaCijenaAdmin.i18n.done);
+				}
+				$button.prop("disabled", false);
+				running = false;
+				return;
+			}
+
+			setProgress(seen, total, false);
+			$status.removeClass("is-error");
+			if (phase === "write") {
+				$status.text(sidrenaCijenaAdmin.i18n.feedWrite || sidrenaCijenaAdmin.i18n.running);
+			} else if (total > 0) {
+				$status.text(formatProgress(seen, total));
+			} else {
+				$status.text(sidrenaCijenaAdmin.i18n.running);
+			}
+		}
+
+		function fail() {
+			attempts += 1;
+			if (attempts < 8) {
+				$status.removeClass("is-error").text(sidrenaCijenaAdmin.i18n.retry || sidrenaCijenaAdmin.i18n.running);
+				window.setTimeout(step, 1200 * attempts);
+				return;
+			}
+			$status.addClass("is-error").text(sidrenaCijenaAdmin.i18n.feedStalled || sidrenaCijenaAdmin.i18n.error);
+			$button.prop("disabled", false);
+			running = false;
+		}
+
+		function step() {
+			$.ajax({
+				url: sidrenaCijenaAdmin.ajaxUrl,
+				method: "POST",
+				timeout: 120000,
+				data: {
+					action: "sidrena_cijena_feed_job",
+					nonce: sidrenaCijenaAdmin.feedNonce,
+					op: "step",
+				},
+			})
+				.done(function (response) {
+					if (!response || !response.success || !response.data) {
+						var message =
+							response && response.data && response.data.message ? response.data.message : "";
+						if (message && attempts >= 4) {
+							$status.addClass("is-error").text(message);
+							$button.prop("disabled", false);
+							running = false;
+							return;
+						}
+						fail();
+						return;
+					}
+
+					attempts = 0;
+					paint(response.data);
+					if (response.data.retry) {
+						window.setTimeout(step, 1500);
+						return;
+					}
+					if (response.data.done || response.data.status !== "running") {
+						return;
+					}
+					step();
+				})
+				.fail(fail);
+		}
+
+		function begin() {
+			if (running) {
+				return;
+			}
+			running = true;
+			attempts = 0;
+			$button.prop("disabled", true);
+			$status.removeClass("is-error is-warning").text(sidrenaCijenaAdmin.i18n.running);
+			setProgress(0, 0, false);
+
+			$.ajax({
+				url: sidrenaCijenaAdmin.ajaxUrl,
+				method: "POST",
+				timeout: 60000,
+				data: {
+					action: "sidrena_cijena_feed_job",
+					nonce: sidrenaCijenaAdmin.feedNonce,
+					op: "start",
+				},
+			})
+				.done(function (response) {
+					if (!response || !response.success || !response.data) {
+						fail();
+						return;
+					}
+					attempts = 0;
+					paint(response.data);
+					if (response.data.status === "running" && !response.data.done) {
+						step();
+						return;
+					}
+					running = false;
+					$button.prop("disabled", false);
+				})
+				.fail(fail);
+		}
+
+		$button.on("click", function (event) {
+			event.preventDefault();
+			begin();
+		});
+
+		if (sidrenaCijenaAdmin.feedJob && sidrenaCijenaAdmin.feedJob.status === "running") {
+			running = true;
+			$button.prop("disabled", true);
+			paint(sidrenaCijenaAdmin.feedJob);
+			step();
+		} else if (sidrenaCijenaAdmin.feedJob && sidrenaCijenaAdmin.feedJob.status === "error") {
+			$status.addClass("is-error").text(sidrenaCijenaAdmin.feedJob.message || sidrenaCijenaAdmin.i18n.error);
+		}
+	}
+
+
 	function bindPurge() {
 		var $button = $("#sidrena-cijena-purge");
 		var $status = $(".sidrena-cijena-purge-status");
@@ -552,6 +717,7 @@
 		});
 
 		bindSnapshot();
+		bindFeedJob();
 		bindPurge();
 	});
 })(jQuery);

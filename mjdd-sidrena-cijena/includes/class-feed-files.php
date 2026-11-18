@@ -720,6 +720,7 @@ class Sidrena_Cijena_Feed_Files {
 		}
 
 		Sidrena_Cijena_Archive::instance()->prune_archive();
+		Sidrena_Cijena_Archive::instance()->ensure_live_copies();
 
 		return array(
 			'generated' => time(),

@@ -102,6 +102,7 @@ class Sidrena_Cijena_Admin {
 		add_action( 'admin_footer', array( $this, 'hide_footer_thankyou' ), 999 );
 		add_filter( 'admin_footer_text', array( $this, 'filter_admin_footer_text' ), 999 );
 		add_action( 'wp_ajax_sidrena_cijena_purge', array( $this, 'ajax_purge' ) );
+		add_action( 'wp_ajax_sidrena_cijena_feed_job', array( $this, 'ajax_feed_job' ) );
 		add_action( 'wp_ajax_sidrena_cijena_archive_delete', array( $this, 'ajax_archive_delete' ) );
 		add_action( 'wp_ajax_sidrena_cijena_archive_delete_all', array( $this, 'ajax_archive_delete_all' ) );
 		add_action( 'admin_init', array( $this, 'handle_prefix_choice' ) );
@@ -767,6 +768,8 @@ class Sidrena_Cijena_Admin {
 				array(
 					'ajaxUrl'            => admin_url( 'admin-ajax.php' ),
 					'nonce'              => wp_create_nonce( 'sidrena_cijena_snapshot' ),
+					'feedNonce'          => wp_create_nonce( 'sidrena_cijena_feed_job' ),
+					'feedJob'            => Sidrena_Cijena_Feed_Job::instance()->status(),
 					'purgeNonce'         => wp_create_nonce( 'sidrena_cijena_purge' ),
 					'archiveNonce'       => wp_create_nonce( 'sidrena_cijena_archive_delete' ),
 					'importNonce'        => wp_create_nonce( 'sidrena_cijena_import' ),
@@ -783,6 +786,10 @@ class Sidrena_Cijena_Admin {
 					'i18n'               => array(
 						'running'      => __( 'Obrada…', 'mjdd-sidrena-cijena' ),
 						'progress'     => __( 'Obrada… %1$s / %2$s', 'mjdd-sidrena-cijena' ),
+						'feedWrite'    => __( 'Spremanje javnih datoteka…', 'mjdd-sidrena-cijena' ),
+						'feedDone'     => __( 'Javni cjenik je generiran.', 'mjdd-sidrena-cijena' ),
+						'feedDoneCount'=> __( 'Javni cjenik je generiran. Stavki: %d.', 'mjdd-sidrena-cijena' ),
+						'feedStalled'  => __( 'Generiranje je stalo. Osvježite stranicu — nastavlja se od istog mjesta.', 'mjdd-sidrena-cijena' ),
 						'retry'        => __( 'Veza je prekinuta. Nastavljam automatski…', 'mjdd-sidrena-cijena' ),
 						'stalled'      => __( 'Obrada je stala. Pritisnite gumb ponovno za nastavak od istog mjesta. Već upisane cijene se ne prepisuju.', 'mjdd-sidrena-cijena' ),
 						'done'         => __( 'Gotovo. Prazna polja su popunjena.', 'mjdd-sidrena-cijena' ),
@@ -882,6 +889,13 @@ class Sidrena_Cijena_Admin {
 	 */
 	public function ajax_snapshot() {
 		Sidrena_Cijena_Admin_Save::instance()->ajax_snapshot();
+	}
+
+	/**
+	 * One step of the public-catalog progress job.
+	 */
+	public function ajax_feed_job() {
+		Sidrena_Cijena_Admin_Save::instance()->ajax_feed_job();
 	}
 
 	/**

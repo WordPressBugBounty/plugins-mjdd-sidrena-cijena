@@ -92,6 +92,161 @@ class Sidrena_Cijena_Feed_Rows {
 	}
 
 	/**
+	 * One page of the public catalog. The admin progress job calls this.
+	 *
+	 * Woo shops return only Woo rows. Manual catalog rows are appended once,
+	 * by the publisher, after the last page. A shop where wc_get_products
+	 * returns nothing on page 1 falls back to the SQL walk in that same request.
+	 *
+	 * @param int $page  1-based page.
+	 * @param int $limit Parents per page.
+	 * @return array{rows: array<int, array<string, string>>, done: bool, parents: int}
+	 */
+	public function collect_public_batch( $page, $limit = 30 ) {
+		$page  = max( 1, (int) $page );
+		$limit = max( 1, (int) $limit );
+
+		return Sidrena_Cijena_I18n::instance()->run_for_product_catalog_query(
+			function () use ( $page, $limit ) {
+				if ( ! Sidrena_Cijena_Plugin::woocommerce_active() || ! function_exists( 'wc_get_products' ) ) {
+					if ( $page > 1 ) {
+						return array(
+							'rows'    => array(),
+							'done'    => true,
+							'parents' => 0,
+						);
+					}
+
+					$rows = $this->collect_rows_now( false, true, null, null );
+
+					return array(
+						'rows'    => $rows,
+						'done'    => true,
+						'parents' => count( $rows ),
+					);
+				}
+
+				$query = array(
+					'status'  => array( 'publish' ),
+					'type'    => Sidrena_Cijena_Activator::catalog_product_types(),
+					'limit'   => $limit,
+					'page'    => $page,
+					'return'  => 'ids',
+					'orderby' => 'ID',
+					'order'   => 'ASC',
+				);
+				$this->apply_catalog_language_to_product_query( $query );
+
+				$forward_lang    = static function ( $args, $query_vars ) {
+					if ( isset( $query_vars['lang'] ) && is_string( $query_vars['lang'] ) && '' !== $query_vars['lang'] ) {
+						$args['lang'] = $query_vars['lang'];
+					}
+
+					return $args;
+				};
+				$use_pll_forward = $this->uses_polylang_catalog_query_filter();
+				if ( $use_pll_forward ) {
+					add_filter( 'woocommerce_product_data_store_cpt_get_products_query', $forward_lang, 10, 2 );
+				}
+
+				try {
+					$ids = wc_get_products( $query );
+					if ( ! is_array( $ids ) ) {
+						$ids = array();
+					}
+
+					if ( array() === $ids ) {
+						if ( 1 === $page ) {
+							$sql_rows = $this->collect_woo_rows_sql( false, true );
+							if ( array() !== $sql_rows ) {
+								return array(
+									'rows'    => $sql_rows,
+									'done'    => true,
+									'parents' => count( $sql_rows ),
+								);
+							}
+						}
+
+						return array(
+							'rows'    => array(),
+							'done'    => true,
+							'parents' => 0,
+						);
+					}
+
+					$meta = Sidrena_Cijena_Product_Meta::instance();
+					$rows = array();
+					update_meta_cache( 'post', $ids );
+
+					foreach ( $ids as $product_id ) {
+						$product = wc_get_product( $product_id );
+						if ( ! $product ) {
+							continue;
+						}
+
+						if ( $product->is_type( 'variable' ) || $product->is_type( 'variable-subscription' ) ) {
+							$children = $product->get_children();
+							if ( ! empty( $children ) ) {
+								update_meta_cache( 'post', $children );
+							}
+							foreach ( $children as $variation_id ) {
+								$variation = wc_get_product( $variation_id );
+								if ( $variation ) {
+									$this->maybe_add_row( $rows, $variation, $meta, false, true );
+								}
+							}
+							continue;
+						}
+
+						$this->maybe_add_row( $rows, $product, $meta, false, true );
+					}
+
+					return array(
+						'rows'    => $rows,
+						'done'    => count( $ids ) < $limit,
+						'parents' => count( $ids ),
+					);
+				} finally {
+					if ( $use_pll_forward ) {
+						remove_filter( 'woocommerce_product_data_store_cpt_get_products_query', $forward_lang, 10 );
+					}
+				}
+			}
+		);
+	}
+
+	/**
+	 * Published parent products, for the progress total.
+	 *
+	 * @return int
+	 */
+	public function count_public_parents() {
+		if ( ! function_exists( 'wc_get_products' ) ) {
+			return 0;
+		}
+
+		return (int) Sidrena_Cijena_I18n::instance()->run_for_product_catalog_query(
+			function () {
+				$query = array(
+					'status'   => array( 'publish' ),
+					'type'     => Sidrena_Cijena_Activator::catalog_product_types(),
+					'limit'    => 1,
+					'page'     => 1,
+					'paginate' => true,
+					'return'   => 'ids',
+				);
+				$this->apply_catalog_language_to_product_query( $query );
+				$result = wc_get_products( $query );
+				if ( is_object( $result ) && isset( $result->total ) ) {
+					return (int) $result->total;
+				}
+
+				return 0;
+			}
+		);
+	}
+
+	/**
 	 * WooCommerce products and variations only.
 	 *
 	 * @param bool $missing_only Empty sidrena only.

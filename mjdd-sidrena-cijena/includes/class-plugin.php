@@ -17,6 +17,7 @@ require_once SIDRENA_CIJENA_PATH . 'includes/class-poslovnice.php';
 require_once SIDRENA_CIJENA_PATH . 'includes/class-feed-rows.php';
 require_once SIDRENA_CIJENA_PATH . 'includes/class-feed-files.php';
 require_once SIDRENA_CIJENA_PATH . 'includes/class-archive.php';
+require_once SIDRENA_CIJENA_PATH . 'includes/class-feed-job.php';
 require_once SIDRENA_CIJENA_PATH . 'includes/class-feed-routes.php';
 require_once SIDRENA_CIJENA_PATH . 'includes/class-product-fields.php';
 require_once SIDRENA_CIJENA_PATH . 'includes/class-admin-save.php';
@@ -210,6 +211,8 @@ final class Sidrena_Cijena_Plugin {
 		delete_option( Sidrena_Cijena_Catalog::OPTION_KEY );
 		delete_option( Sidrena_Cijena_Upit::OPTION_KEY );
 		delete_option( Sidrena_Cijena_Poslovnice::OPTION_KEY );
+		delete_option( Sidrena_Cijena_Export::REBUILD_LOCK );
+		delete_option( Sidrena_Cijena_Feed_Job::OPTION );
 
 		$wpdb->query(
 			$wpdb->prepare(

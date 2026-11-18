@@ -23,6 +23,8 @@ delete_option( 'sidrena_cijena_rewrite_ver' );
 delete_option( 'sidrena_cijena_poslovnice' );
 delete_option( 'sidrena_cijena_catalog' );
 delete_option( 'sidrena_cijena_upit' );
+delete_option( 'sidrena_cijena_rebuild_lock' );
+delete_option( 'sidrena_cijena_feed_job' );
 
 $sidrena_cijena_uploads = wp_upload_dir( null, false );
 if ( empty( $sidrena_cijena_uploads['error'] ) && ! empty( $sidrena_cijena_uploads['basedir'] ) ) {

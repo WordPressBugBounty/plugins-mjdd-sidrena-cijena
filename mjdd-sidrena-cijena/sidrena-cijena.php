@@ -3,7 +3,7 @@
  * Plugin Name: MJDD Sidrena i bazna cijena
  * Plugin URI: https://mjdd.hr/sidrena-cijena/
  * Description: MJDD plugin for the Croatian bazna cijena (sidrena cijena) - WooCommerce products or a standalone public pricelist.
- * Version: 1.29.7
+ * Version: 1.29.9
  * Author: Jure Zadravec / MJDD
  * Author URI: https://mjdd.hr
  * Text Domain: mjdd-sidrena-cijena
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'SIDRENA_CIJENA_VERSION', '1.29.7' );
+define( 'SIDRENA_CIJENA_VERSION', '1.29.9' );
 define( 'SIDRENA_CIJENA_FILE', __FILE__ );
 define( 'SIDRENA_CIJENA_PATH', plugin_dir_path( __FILE__ ) );
 define( 'SIDRENA_CIJENA_URL', plugin_dir_url( __FILE__ ) );

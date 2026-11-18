@@ -200,9 +200,138 @@ class Sidrena_Cijena_Archive {
 	 * @return string|WP_Error Destination path or error.
 	 */
 	public function archive_public_xml() {
+		$this->ensure_live_copies();
 		$this->prune_archive();
 
 		return true;
+	}
+
+	/**
+	 * Copy each current live feed into the archive when that copy is missing.
+	 *
+	 * The live cjenik is the file shoppers see. The archive used to receive a
+	 * file only after the next content change replaced it, so a filled cjenik
+	 * left the archive empty.
+	 */
+	public function ensure_live_copies() {
+		static $ran = false;
+		if ( $ran ) {
+			return;
+		}
+		$ran = true;
+
+		$dir = $this->get_archive_dir();
+		if ( '' === $dir || ! wp_mkdir_p( $dir ) ) {
+			return;
+		}
+
+		$index = trailingslashit( $dir ) . 'index.php';
+		if ( ! file_exists( $index ) ) {
+			file_put_contents( $index, "<?php\ndefined( 'ABSPATH' ) || exit;\n" ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+		}
+
+		$files  = Sidrena_Cijena_Feed_Files::instance();
+		$scopes = array(
+			array(
+				'oznaka' => '',
+				'outlet' => null,
+			),
+		);
+		$settings = Sidrena_Cijena_Settings::instance();
+		if ( $settings->is_multi_poslovnica() && ! $settings->is_za_sva_prodajna_mjesta() ) {
+			foreach ( Sidrena_Cijena_Poslovnice::instance()->with_products() as $outlet ) {
+				$scopes[] = array(
+					'oznaka' => isset( $outlet['oznaka'] ) ? (string) $outlet['oznaka'] : '',
+					'outlet' => $outlet,
+				);
+			}
+		}
+
+		$preferred = $files->export_format();
+		foreach ( $scopes as $scope ) {
+			$oznaka = isset( $scope['oznaka'] ) ? (string) $scope['oznaka'] : '';
+			$outlet = isset( $scope['outlet'] ) && is_array( $scope['outlet'] ) ? $scope['outlet'] : null;
+			foreach ( array( 'robe', 'usluge' ) as $kind ) {
+				$this->ensure_one_live_copy( $files, $dir, $preferred, $oznaka, $kind, $outlet );
+			}
+		}
+	}
+
+	/**
+	 * Copy one live robe/usluge file into the archive under its legal name.
+	 *
+	 * @param Sidrena_Cijena_Feed_Files    $files    Feed files.
+	 * @param string                       $dir      Archive directory.
+	 * @param string                       $format   Preferred xml|csv.
+	 * @param string                       $oznaka   Outlet code.
+	 * @param string                       $kind     robe|usluge.
+	 * @param array<string, mixed>|null    $outlet   Outlet row.
+	 */
+	private function ensure_one_live_copy( $files, $dir, $format, $oznaka, $kind, $outlet ) {
+		$path = $files->get_public_path( $format, $oznaka, $kind );
+		$ext  = $format;
+		if ( '' === $path || ! is_file( $path ) ) {
+			$ext  = 'csv' === $format ? 'xml' : 'csv';
+			$path = $files->get_public_path( $ext, $oznaka, $kind );
+		}
+		if ( '' === $path || ! is_file( $path ) ) {
+			return;
+		}
+
+		$state = $this->feed_state( $oznaka, $kind );
+		$name  = ( ! empty( $state['filename'] ) && is_string( $state['filename'] ) ) ? $this->sanitize_archive_name( $state['filename'] ) : '';
+		if ( '' !== $name && substr( strtolower( $name ), -1 - strlen( $ext ) ) !== '.' . $ext ) {
+			$name = '';
+		}
+
+		if ( '' === $name ) {
+			$pohrana = Sidrena_Cijena_Settings::instance()->next_pohrana( $outlet, $kind );
+			$stamp   = (int) filemtime( $path );
+			$name    = $this->sanitize_archive_name( $this->legal_filename( $ext, $stamp > 0 ? $stamp : time(), $pohrana, $outlet, $kind ) );
+			if ( '' === $name ) {
+				return;
+			}
+			$this->save_feed_state(
+				$oznaka,
+				$kind,
+				array(
+					'hash'     => isset( $state['hash'] ) ? $state['hash'] : '',
+					'filename' => $name,
+					'pohrana'  => $pohrana,
+					'count'    => isset( $state['count'] ) ? (int) $state['count'] : 0,
+				)
+			);
+			$this->bump_published_pohrana( $outlet, $kind, $pohrana + 1 );
+		}
+
+		$dest = trailingslashit( $dir ) . $name;
+		if ( is_file( $dest ) ) {
+			return;
+		}
+
+		copy( $path, $dest );
+	}
+
+	/**
+	 * Advance the storage sequence after the current live file is recorded.
+	 *
+	 * @param array<string, mixed>|null $outlet Outlet row, or null for the shop file.
+	 * @param string                    $kind   robe|usluge.
+	 * @param int                       $next   Next sequence.
+	 */
+	private function bump_published_pohrana( $outlet, $kind, $next ) {
+		if ( is_array( $outlet ) && ! empty( $outlet['id'] ) ) {
+			Sidrena_Cijena_Poslovnice::instance()->set_pohrana( $outlet['id'], $next, $kind );
+			return;
+		}
+
+		$key = 'usluge' === $kind ? 'file_pohrana_usluge' : 'file_pohrana_robe';
+		Sidrena_Cijena_Settings::instance()->save(
+			array(
+				$key            => $next,
+				'file_pohrana'  => $next,
+			)
+		);
 	}
 
 	/**
@@ -211,6 +340,8 @@ class Sidrena_Cijena_Archive {
 	 * @return array<int, array{date:string,ext:string,name:string,path:string,url:string,bytes:int}>
 	 */
 	public function get_archive_files() {
+		$this->ensure_live_copies();
+
 		$dir   = $this->get_archive_dir();
 		if ( '' === $dir || ! is_dir( $dir ) ) {
 			return array();

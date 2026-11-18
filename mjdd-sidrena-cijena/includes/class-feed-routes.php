@@ -170,7 +170,7 @@ class Sidrena_Cijena_Feed_Routes {
 	 * Schedule a single background rebuild. Repeat visits wait out the cooldown.
 	 */
 	public function schedule_public_rebuild() {
-		if ( get_transient( Sidrena_Cijena_Export::REBUILD_COOLDOWN ) || get_transient( Sidrena_Cijena_Export::REBUILD_LOCK ) ) {
+		if ( get_transient( Sidrena_Cijena_Export::REBUILD_COOLDOWN ) || Sidrena_Cijena_Export::instance()->is_rebuild_locked() ) {
 			return;
 		}
 
@@ -645,7 +645,7 @@ class Sidrena_Cijena_Feed_Routes {
 		) . '</p>';
 
 		if ( empty( $files ) ) {
-			echo '<p class="empty">' . esc_html__( 'Arhiva je prazna. Datoteke se dodaju svakim dnevnim generiranjem nakon 00:00.', 'mjdd-sidrena-cijena' ) . '</p>';
+			echo '<p class="empty">' . esc_html__( 'Arhiva je prazna. Objavljeni cjenik se ovdje pojavi čim postoji javna datoteka.', 'mjdd-sidrena-cijena' ) . '</p>';
 		} elseif ( Sidrena_Cijena_Settings::instance()->is_multi_poslovnica() ) {
 			$this->render_archive_groups( $files );
 		} else {

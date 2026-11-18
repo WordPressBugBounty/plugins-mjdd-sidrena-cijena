@@ -282,17 +282,41 @@ defined( 'ABSPATH' ) || exit;
 					</p>
 				<?php endif; ?>
 				<p class="description"><?php echo esc_html__( 'Spremanje cjenika, uvoz i poslovnice ne mijenjaju javnu datoteku odmah. Promjena cijene ili kataloga stavlja generiranje u red za otprilike minutu. U 10:00 ide još jedna provjera.', 'mjdd-sidrena-cijena' ); ?></p>
-				<p class="description"><?php echo esc_html__( 'Gumb Generiraj javni cjenik uvijek osvježava HTML i datoteke na fiksnim adresama. Nova stavka u arhivi nastaje samo kad se promijene cijene ili sadržaj cjenika.', 'mjdd-sidrena-cijena' ); ?></p>
+				<p class="description"><?php echo esc_html__( 'Gumb Generiraj javni cjenik ide u kratkim koracima, s trakom napretka. Osvježenje stranice nastavlja isti posao. Trenutni javni cjenik ulazi u arhivu. Nova stavka s novim brojem pohrane nastaje samo kad se promijene cijene ili sadržaj.', 'mjdd-sidrena-cijena' ); ?></p>
+				<?php
+				$feed_job     = Sidrena_Cijena_Feed_Job::instance()->status();
+				$feed_running = isset( $feed_job['status'] ) && 'running' === $feed_job['status'];
+				$feed_total   = isset( $feed_job['total'] ) ? (int) $feed_job['total'] : 0;
+				$feed_seen    = isset( $feed_job['seen'] ) ? (int) $feed_job['seen'] : 0;
+				$feed_pct     = ( $feed_running && $feed_total > 0 ) ? (int) min( 100, round( ( $feed_seen / $feed_total ) * 100 ) ) : 0;
+				?>
 				<p class="sidrena-cijena-actions">
 					<button type="submit" class="button button-secondary" name="sidrena_cijena_action" value="save_xml_settings">
 						<?php echo $this->save_icon_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- static SVG. ?>
 						<?php echo esc_html__( 'Spremi', 'mjdd-sidrena-cijena' ); ?>
 					</button>
-					<button type="submit" class="button button-primary" name="sidrena_cijena_action" value="regenerate_public_xml">
+					<button type="button" class="button button-primary" id="sidrena-cijena-run-feed">
 						<span class="dashicons dashicons-update" aria-hidden="true"></span>
 						<?php echo esc_html__( 'Generiraj javni cjenik', 'mjdd-sidrena-cijena' ); ?>
 					</button>
 				</p>
+				<div class="sidrena-cijena-progress" id="sidrena-feed-progress"<?php echo $feed_running ? '' : ' hidden'; ?>>
+					<div class="sidrena-cijena-progress__track">
+						<div class="sidrena-cijena-progress__bar" id="sidrena-feed-bar" style="width:<?php echo esc_attr( (string) $feed_pct ); ?>%"></div>
+					</div>
+				</div>
+				<p class="sidrena-cijena-snapshot-status sidrena-cijena-feed-status" aria-live="polite"><?php
+				if ( $feed_running && $feed_total > 0 ) {
+					echo esc_html(
+						sprintf(
+							/* translators: 1: processed parents, 2: total parents */
+							__( 'Obrada… %1$s / %2$s', 'mjdd-sidrena-cijena' ),
+							number_format_i18n( $feed_seen ),
+							number_format_i18n( $feed_total )
+						)
+					);
+				}
+				?></p>
 			</form>
 		</section>
 
