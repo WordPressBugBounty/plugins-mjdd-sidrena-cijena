@@ -747,9 +747,13 @@ class Sidrena_Cijena_Export {
 			}
 
 			foreach ( Sidrena_Cijena_Poslovnice::instance()->with_products() as $outlet ) {
-				$ids      = isset( $outlet['products'] ) ? $outlet['products'] : array();
-				$out_rows = $rows_api->apply_outlet_dostupnost( $rows_api->filter_woo_rows_for_assigned_ids( $rows, $ids ), $outlet['oznaka'] );
-				$rows_api->append_extra_catalog_rows( $out_rows, false, true, $outlet['oznaka'], $ids );
+				$ids = isset( $outlet['products'] ) ? $outlet['products'] : array();
+				if ( Sidrena_Cijena_Plugin::woocommerce_active() ) {
+					$out_rows = $rows_api->apply_outlet_dostupnost( $rows_api->filter_woo_rows_for_assigned_ids( $rows, $ids ), $outlet['oznaka'] );
+					$rows_api->append_extra_catalog_rows( $out_rows, false, true, $outlet['oznaka'], $ids );
+				} else {
+					$out_rows = $rows_api->collect_rows( false, true, $ids, $outlet['oznaka'] );
+				}
 				$result = $this->write_outlet_feed( $outlet, $stored, $out_rows, $force_rewrite );
 				if ( is_wp_error( $result ) ) {
 					return $result;

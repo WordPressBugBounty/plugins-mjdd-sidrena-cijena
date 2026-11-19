@@ -5,7 +5,7 @@ Tags: woocommerce, croatia, sidrena cijena, bazna cijena, consumer protection
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.29.9
+Stable tag: 1.29.10
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -243,6 +243,9 @@ Example:
 `.sidrena-cijena__amount { font-weight: 700; color: #111; }`
 
 == Changelog ==
+
+= 1.29.10 =
+* Više poslovnica bez WooCommercea: batch generiranje (cron i Generiraj javni cjenik) opet puni HTML i XML po poslovnici iz ručne tablice usluga.
 
 = 1.29.9 =
 * Generiraj javni cjenik: prikupljanje u koracima putem AJAX-a, traka napretka, nastavak nakon osvježenja stranice; pouzdaniji lock i bez sukoba s wp-cronom.
