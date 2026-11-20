@@ -640,8 +640,8 @@ class Sidrena_Cijena_Feed_Routes {
 		echo '<h1>' . esc_html( $title ) . '</h1>';
 		echo '<p>' . esc_html( $shop ) . ' - ' . esc_html(
 			Sidrena_Cijena_Settings::instance()->is_multi_poslovnica()
-				? __( 'Zamijenjeni cjenici (XML ili CSV). Svaka datoteka ostaje 15 dana od zamjene.', 'mjdd-sidrena-cijena' )
-				: __( 'Dnevni cjenici (XML ili CSV), najviše 30 zadnjih datoteka.', 'mjdd-sidrena-cijena' )
+				? __( 'Zamijenjeni cjenici, jedna datoteka po danu. Svaka ostaje 15 dana od zamjene.', 'mjdd-sidrena-cijena' )
+				: __( 'Dnevni cjenici (XML ili CSV), jedna datoteka po danu.', 'mjdd-sidrena-cijena' )
 		) . '</p>';
 
 		if ( empty( $files ) ) {

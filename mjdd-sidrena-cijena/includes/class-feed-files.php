@@ -757,12 +757,16 @@ class Sidrena_Cijena_Feed_Files {
 			return new WP_Error( 'sidrena_xml_mkdir', __( 'Mapa za javni cjenik nije mogla biti stvorena.', 'mjdd-sidrena-cijena' ) );
 		}
 
+		$stored   = ( ! empty( $state['filename'] ) && is_string( $state['filename'] ) ) ? $state['filename'] : '';
+		$same_day = $archive->reuses_today_filename( $stored, $format, $outlet, $kind );
+
 		if ( array() === $subset ) {
 			if ( '' !== $path && file_exists( $path ) ) {
 				$this->archive_live_file( $path, $oznaka, $kind, $outlet );
 				wp_delete_file( $path );
 				$archive->clear_feed_state( $oznaka, $kind );
 			}
+			$archive->collapse_archive_to_one_per_day();
 
 			return array(
 				'count'   => 0,
@@ -772,9 +776,10 @@ class Sidrena_Cijena_Feed_Files {
 
 		$body = 'csv' === $format ? $this->build_csv_string( $rows, $kind ) : $this->build_xml_string( $rows, 'cjenik', true, $kind );
 		$hash = md5( $kind . '|' . $this->identity_token( $outlet ) . '|' . (string) wp_json_encode( $subset ) );
-		$this->remove_other_extension( $format, $oznaka, $kind, $outlet );
+		$this->remove_other_extension( $format, $oznaka, $kind, $outlet, $same_day );
 		if ( isset( $state['hash'] ) && $hash === $state['hash'] && file_exists( $path ) ) {
 			if ( ! $force_rewrite ) {
+				$archive->collapse_archive_to_one_per_day();
 				return array(
 					'count'   => count( $subset ),
 					'changed' => false,
@@ -787,6 +792,11 @@ class Sidrena_Cijena_Feed_Files {
 				return new WP_Error( 'sidrena_xml_write', __( 'Javni cjenik nije mogao biti spremljen.', 'mjdd-sidrena-cijena' ) );
 			}
 
+			if ( '' !== $stored ) {
+				$archive->overwrite_archive_copy( $path, $this->filename_for_same_day( $stored, $format ) );
+			}
+			$archive->collapse_archive_to_one_per_day();
+
 			return array(
 				'count'     => count( $subset ),
 				'changed'   => false,
@@ -795,7 +805,7 @@ class Sidrena_Cijena_Feed_Files {
 			);
 		}
 
-		if ( file_exists( $path ) ) {
+		if ( file_exists( $path ) && ! $same_day ) {
 			$this->archive_live_file( $path, $oznaka, $kind, $outlet );
 		}
 
@@ -805,8 +815,13 @@ class Sidrena_Cijena_Feed_Files {
 		}
 
 		$settings = Sidrena_Cijena_Settings::instance();
-		$pohrana  = $settings->next_pohrana( $outlet, $kind );
-		$filename = $archive->legal_filename( $format, time(), $pohrana, $outlet, $kind );
+		if ( $same_day && '' !== $stored ) {
+			$filename = $this->filename_for_same_day( $stored, $format );
+			$pohrana  = ! empty( $state['pohrana'] ) ? (int) $state['pohrana'] : 0;
+		} else {
+			$pohrana  = $settings->next_pohrana( $outlet, $kind );
+			$filename = $archive->legal_filename( $format, time(), $pohrana, $outlet, $kind );
+		}
 		$archive->save_feed_state(
 			$oznaka,
 			$kind,
@@ -817,7 +832,11 @@ class Sidrena_Cijena_Feed_Files {
 				'count'    => count( $subset ),
 			)
 		);
-		$this->bump_pohrana( $outlet, $kind, $pohrana + 1 );
+		if ( ! $same_day ) {
+			$this->bump_pohrana( $outlet, $kind, $pohrana + 1 );
+		}
+		$archive->overwrite_archive_copy( $path, $filename );
+		$archive->collapse_archive_to_one_per_day();
 
 		return array(
 			'count'    => count( $subset ),
@@ -898,16 +917,45 @@ class Sidrena_Cijena_Feed_Files {
 	}
 
 	/**
+	 * Keep today's storage number and time. Swap only the extension.
+	 *
+	 * @param string $filename Published basename.
+	 * @param string $format   xml|csv.
+	 * @return string
+	 */
+	private function filename_for_same_day( $filename, $format ) {
+		$format   = $this->sanitize_ext( $format );
+		$filename = basename( (string) $filename );
+		$renamed  = preg_replace( '/\.(xml|csv)$/i', '.' . $format, $filename );
+		if ( ! is_string( $renamed ) || '' === $renamed ) {
+			return $filename;
+		}
+
+		return $renamed;
+	}
+
+	/**
 	 * Take the other format off its URL. The bytes stay in the archive for 15 days.
 	 *
-	 * @param string                    $format xml|csv currently published.
-	 * @param string                    $oznaka Outlet code.
-	 * @param string                    $kind   robe|usluge.
-	 * @param array<string, mixed>|null $outlet Outlet row.
+	 * Same-day overwrite deletes the other live file. It does not archive it.
+	 *
+	 * @param string                    $format   xml|csv currently published.
+	 * @param string                    $oznaka   Outlet code.
+	 * @param string                    $kind     robe|usluge.
+	 * @param array<string, mixed>|null $outlet   Outlet row.
+	 * @param bool                      $same_day Publication name is already today.
 	 */
-	private function remove_other_extension( $format, $oznaka, $kind, $outlet ) {
+	private function remove_other_extension( $format, $oznaka, $kind, $outlet, $same_day = false ) {
 		$other = 'csv' === $format ? 'xml' : 'csv';
-		$this->retire_live_file( $this->get_public_path( $other, $oznaka, $kind ), $oznaka, $kind, $outlet, $other );
+		$path  = $this->get_public_path( $other, $oznaka, $kind );
+		if ( $same_day ) {
+			if ( '' !== $path && file_exists( $path ) ) {
+				wp_delete_file( $path );
+			}
+			return;
+		}
+
+		$this->retire_live_file( $path, $oznaka, $kind, $outlet, $other );
 	}
 
 	/**

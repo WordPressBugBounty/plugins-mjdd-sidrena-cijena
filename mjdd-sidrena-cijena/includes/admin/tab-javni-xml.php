@@ -25,8 +25,8 @@ defined( 'ABSPATH' ) || exit;
 					<?php
 					echo esc_html(
 						$settings->is_multi_poslovnica()
-							? __( 'Webshop ima zaseban cjenik robe i, ako ima usluga s cijenom, cjenik usluga. Svaka poslovnica ima svoje datoteke. Nova datoteka i arhiva nastaju samo kad se sadržaj promijeni. Arhiva ostaje 15 dana od zamjene. Podaci za naziv unose se na kartici Poslovnice.', 'mjdd-sidrena-cijena' )
-							: __( 'Cjenik robe i cjenik usluga objavljuju se na fiksnim adresama (XML ili CSV). Nova datoteka nastaje samo kad se cjenik promijeni, najkasnije do 11:00. Zamijenjena datoteka ostaje u arhivi 15 dana. OIB, razred prodajnog mjesta, adresa, oznaka i broj pohrane unose se na kartici Poslovnice.', 'mjdd-sidrena-cijena' )
+							? __( 'Webshop ima zaseban cjenik robe i, ako ima usluga s cijenom, cjenik usluga. Svaka poslovnica ima svoje datoteke. Jedna datoteka po danu: isti dan je prepisuje. Novi dan arhivira prethodnu i ona ostaje 15 dana. Podaci za naziv unose se na kartici Poslovnice.', 'mjdd-sidrena-cijena' )
+							: __( 'Cjenik robe i cjenik usluga objavljuju se na fiksnim adresama (XML ili CSV). Jedna datoteka po danu: isti dan je prepisuje, novi dan arhivira prethodnu. Zamijenjena datoteka ostaje u arhivi 15 dana. OIB, razred prodajnog mjesta, adresa, oznaka i broj pohrane unose se na kartici Poslovnice.', 'mjdd-sidrena-cijena' )
 					);
 					?>
 				</p>
@@ -259,7 +259,7 @@ defined( 'ABSPATH' ) || exit;
 				<?php endif; ?>
 				<p class="description">
 					<?php
-					echo esc_html__( 'Uključeno po defaultu. U 10:00 provjeri je li se cjenik promijenio. Ako jest, prepisuje fiksnu adresu i staru datoteku stavlja u arhivu na 15 dana. Ako nije, ne radi ništa.', 'mjdd-sidrena-cijena' );
+					echo esc_html__( 'Uključeno po defaultu. U 10:00 provjeri je li se cjenik promijenio. Ako jest i dan je nov, prepisuje fiksnu adresu i staru datoteku stavlja u arhivu na 15 dana. Isti dan samo prepisuje tu datoteku. Ako nije, ne radi ništa.', 'mjdd-sidrena-cijena' );
 					echo ' ';
 					if ( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON ) {
 						echo esc_html__( 'DISABLE_WP_CRON je uključen, pa provjeru u 10:00 pokreće system cron koji zove wp-cron.php.', 'mjdd-sidrena-cijena' );

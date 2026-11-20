@@ -342,7 +342,16 @@ class Sidrena_Cijena_Archive {
 	public function get_archive_files() {
 		$this->ensure_live_copies();
 
-		$dir   = $this->get_archive_dir();
+		return $this->scan_archive_files();
+	}
+
+	/**
+	 * Archive files on disk, newest first. Does not copy the live feed in.
+	 *
+	 * @return array<int, array{date:string,ext:string,name:string,path:string,url:string,bytes:int,stamp:int}>
+	 */
+	private function scan_archive_files() {
+		$dir = $this->get_archive_dir();
 		if ( '' === $dir || ! is_dir( $dir ) ) {
 			return array();
 		}
@@ -563,6 +572,153 @@ class Sidrena_Cijena_Archive {
 	}
 
 	/**
+	 * True when the published legal name carries today's calendar day.
+	 *
+	 * @param string $filename Basename.
+	 * @return bool
+	 */
+	public function filename_is_today( $filename ) {
+		$date = $this->archive_file_date( basename( (string) $filename ) );
+
+		return '' !== $date && $date === wp_date( 'd-m-Y' );
+	}
+
+	/**
+	 * True when today's published name still describes this feed.
+	 *
+	 * A same-day price change reuses the name. A change of trader, place,
+	 * address, or goods/services starts a new name.
+	 *
+	 * @param string                    $stored   Published basename.
+	 * @param string                    $format   xml|csv.
+	 * @param array<string, mixed>|null $outlet   Outlet row.
+	 * @param string                    $kind     robe|usluge.
+	 * @return bool
+	 */
+	public function reuses_today_filename( $stored, $format, $outlet, $kind ) {
+		if ( ! $this->filename_is_today( $stored ) ) {
+			return false;
+		}
+
+		$probe = $this->legal_filename( $format, time(), 1, $outlet, $kind );
+		$left  = $this->archive_day_key( $stored );
+		$right = $this->archive_day_key( $probe );
+
+		return '' !== $left && $left === $right;
+	}
+
+	/**
+	 * Replace the archive copy of one published name with the live bytes.
+	 *
+	 * @param string $source   Live path.
+	 * @param string $filename Legal basename.
+	 */
+	public function overwrite_archive_copy( $source, $filename ) {
+		$filename = $this->sanitize_archive_name( basename( (string) $filename ) );
+		if ( '' === $filename || ! is_file( $source ) ) {
+			return;
+		}
+
+		$dir = $this->get_archive_dir();
+		if ( '' === $dir || ! wp_mkdir_p( $dir ) ) {
+			return;
+		}
+
+		copy( $source, trailingslashit( $dir ) . $filename );
+	}
+
+	/**
+	 * One archive file per feed per calendar day.
+	 *
+	 * The published name is kept. Other copies from that day are removed.
+	 * A past day with no current name keeps its newest file.
+	 */
+	public function collapse_archive_to_one_per_day() {
+		$keep = array();
+		$all  = get_option( 'sidrena_cijena_feed_state', array() );
+		if ( is_array( $all ) ) {
+			foreach ( $all as $row ) {
+				if ( ! is_array( $row ) || empty( $row['filename'] ) || ! is_string( $row['filename'] ) ) {
+					continue;
+				}
+				$name = basename( $row['filename'] );
+				$key  = $this->archive_day_key( $name );
+				if ( '' !== $key ) {
+					$keep[ $key ] = $name;
+				}
+			}
+		}
+
+		$groups = array();
+		foreach ( $this->scan_archive_files() as $file ) {
+			$name = isset( $file['name'] ) ? (string) $file['name'] : '';
+			$key  = $this->archive_day_key( $name );
+			if ( '' === $key ) {
+				continue;
+			}
+			if ( ! isset( $groups[ $key ] ) ) {
+				$groups[ $key ] = array();
+			}
+			$groups[ $key ][] = $file;
+		}
+
+		foreach ( $groups as $key => $files ) {
+			$keep_name = isset( $keep[ $key ] ) ? $keep[ $key ] : '';
+			$present   = false;
+			if ( '' !== $keep_name ) {
+				foreach ( $files as $file ) {
+					if ( isset( $file['name'] ) && $file['name'] === $keep_name ) {
+						$present = true;
+						break;
+					}
+				}
+			}
+			$kept = false;
+			foreach ( $files as $file ) {
+				$name = isset( $file['name'] ) ? (string) $file['name'] : '';
+				if ( $present ) {
+					$drop = $name !== $keep_name;
+				} else {
+					$drop = $kept;
+					$kept = true;
+				}
+				if ( ! $drop ) {
+					continue;
+				}
+				$path = isset( $file['path'] ) ? (string) $file['path'] : '';
+				if ( '' !== $path && file_exists( $path ) ) {
+					wp_delete_file( $path );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Stem plus calendar day, ignoring storage number, clock, and extension.
+	 *
+	 * @param string $name Basename.
+	 * @return string
+	 */
+	private function archive_day_key( $name ) {
+		$base = (string) pathinfo( basename( $name ), PATHINFO_FILENAME );
+		if ( preg_match( '/^(.*)_(\d+)_(\d{8})_(\d{4})$/', $base, $match ) ) {
+			$parsed = DateTime::createFromFormat( '!Ymd', $match[3], wp_timezone() );
+			if ( $parsed instanceof DateTime ) {
+				return $match[1] . '|' . $parsed->format( 'd-m-Y' );
+			}
+		}
+
+		if ( preg_match( '/^(.*)_(\d{2}\.\d{2}\.\d{4})_(\d{2}[:\-]\d{2})$/', $base, $match ) ) {
+			$parsed = DateTime::createFromFormat( '!d.m.Y', $match[2], wp_timezone() );
+			if ( $parsed instanceof DateTime ) {
+				return $match[1] . '|' . $parsed->format( 'd-m-Y' );
+			}
+		}
+
+		return '';
+	}
+
+	/**
 	 * Keep at most 30 archive files; drop the oldest.
 	 */
 	public function prune_archive() {
@@ -597,7 +753,14 @@ class Sidrena_Cijena_Archive {
 	 * @return string
 	 */
 	public function archive_oznaka_from_name( $name ) {
-		$base  = (string) pathinfo( $name, PATHINFO_FILENAME );
+		$base = (string) pathinfo( (string) $name, PATHINFO_FILENAME );
+		if ( preg_match( '/_ZA_SVA_PRODAJNA_MJESTA_(?:ROBE|USLUGE)_\d+_\d{8}_\d{4}$/i', $base ) ) {
+			return '';
+		}
+		if ( preg_match( '/_([^_]+)_(?:ROBE|USLUGE)_\d+_\d{8}_\d{4}$/i', $base, $match ) ) {
+			return (string) $match[1];
+		}
+
 		$parts = explode( '_', $base );
 		if ( 6 !== count( $parts ) ) {
 			return '';
@@ -689,7 +852,9 @@ class Sidrena_Cijena_Archive {
 
 		if ( preg_match( '/_(\d{8})_\d{4}\.(xml|csv)$/', $name, $match ) ) {
 			$parsed = DateTime::createFromFormat( '!Ymd', $match[1], wp_timezone() );
-			return $parsed instanceof DateTime ? $parsed->format( 'd-m-Y' ) : $match[1];
+			$errors = DateTime::getLastErrors();
+			$clean  = $parsed instanceof DateTime && ( false === $errors || ( 0 === $errors['warning_count'] && 0 === $errors['error_count'] ) );
+			return $clean ? $parsed->format( 'd-m-Y' ) : '';
 		}
 
 		if ( preg_match( '/_(\d{2}-\d{2}-\d{4})\.(xml|csv)$/', $name, $match ) ) {
@@ -716,7 +881,9 @@ class Sidrena_Cijena_Archive {
 
 		if ( preg_match( '/_(\d{8})_(\d{4})\.(xml|csv)$/', $name, $match ) ) {
 			$parsed = DateTime::createFromFormat( '!YmdHi', $match[1] . $match[2], wp_timezone() );
-			if ( $parsed instanceof DateTime ) {
+			$errors = DateTime::getLastErrors();
+			$clean  = $parsed instanceof DateTime && ( false === $errors || ( 0 === $errors['warning_count'] && 0 === $errors['error_count'] ) );
+			if ( $clean ) {
 				return $parsed->getTimestamp();
 			}
 		}
@@ -777,11 +944,15 @@ class Sidrena_Cijena_Archive {
 	 * @return int
 	 */
 	public function archive_pohrana_from_name( $name ) {
+		$base = (string) pathinfo( (string) $name, PATHINFO_FILENAME );
+		if ( preg_match( '/_(\d+)_\d{8}_\d{4}$/', $base, $match ) ) {
+			return absint( $match[1] );
+		}
+
 		if ( '' === $this->archive_oznaka_from_name( $name ) ) {
 			return 0;
 		}
 
-		$base  = (string) pathinfo( $name, PATHINFO_FILENAME );
 		$parts = explode( '_', $base );
 
 		return isset( $parts[3] ) ? absint( $parts[3] ) : 0;
@@ -929,6 +1100,14 @@ class Sidrena_Cijena_Archive {
 	 * @return string
 	 */
 	public function archive_file_oznaka( $name ) {
+		$base = (string) pathinfo( (string) $name, PATHINFO_FILENAME );
+		if ( preg_match( '/_ZA_SVA_PRODAJNA_MJESTA_(?:ROBE|USLUGE)_\d+_\d{8}_\d{4}$/i', $base ) ) {
+			$settings = Sidrena_Cijena_Settings::instance();
+			$oznaka   = $settings->normalize_oznaka( $settings->get( 'file_oznaka', '001' ) );
+
+			return '' !== $oznaka ? $oznaka : '001';
+		}
+
 		return Sidrena_Cijena_Settings::instance()->normalize_oznaka( $this->archive_oznaka_from_name( $name ) );
 	}
 

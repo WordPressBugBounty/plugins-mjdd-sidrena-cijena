@@ -24,8 +24,8 @@ defined( 'ABSPATH' ) || exit;
 				<?php
 				echo esc_html(
 					$webshop
-						? __( 'Webshop je zadana poslovnica. OIB ili matični broj, razred prodajnog mjesta, adresa, oznaka i broj pohrane ulaze u službeni naziv datoteke (NN 132/2026). Roba i usluge su zasebne datoteke. Nova arhiva nastaje samo kad se cjenik promijeni i ostaje 15 dana od zamjene.', 'mjdd-sidrena-cijena' )
-						: __( 'Bez WooCommercea nema zasebnog webshop cjenika. Svaka poslovnica je prodajni objekt. Roba i usluge su zasebne datoteke. Nova arhiva nastaje samo kad se cjenik promijeni.', 'mjdd-sidrena-cijena' )
+						? __( 'Webshop je zadana poslovnica. OIB ili matični broj, razred prodajnog mjesta, adresa, oznaka i broj pohrane ulaze u službeni naziv datoteke (NN 132/2026). Roba i usluge su zasebne datoteke. Jedna datoteka po danu: isti dan je prepisuje, a zamijenjena ostaje 15 dana.', 'mjdd-sidrena-cijena' )
+						: __( 'Bez WooCommercea nema zasebnog webshop cjenika. Svaka poslovnica je prodajni objekt. Roba i usluge su zasebne datoteke. Jedna datoteka po danu: isti dan je prepisuje.', 'mjdd-sidrena-cijena' )
 				);
 				?>
 			</p>
@@ -101,7 +101,7 @@ defined( 'ABSPATH' ) || exit;
 						<p class="sidrena-poslovnica__field">
 							<label for="sidrena_cijena_file_pohrana_usluge"><?php echo esc_html__( 'Sljedeći broj pohrane usluga', 'mjdd-sidrena-cijena' ); ?></label>
 							<input type="number" class="sidrena-cijena-input-number" id="sidrena_cijena_file_pohrana_usluge" name="sidrena_cijena_file_pohrana_usluge" min="1" step="1" value="<?php echo esc_attr( (string) (int) $settings->get( 'file_pohrana_usluge', 1 ) ); ?>" />
-							<span class="description"><?php echo esc_html__( 'Raste samo kad se taj cjenik stvarno promijeni.', 'mjdd-sidrena-cijena' ); ?></span>
+							<span class="description"><?php echo esc_html__( 'Raste jednom na dan, kad se taj cjenik stvarno promijeni.', 'mjdd-sidrena-cijena' ); ?></span>
 						</p>
 					</div>
 					<p class="description">
