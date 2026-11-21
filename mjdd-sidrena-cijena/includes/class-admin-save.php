@@ -214,13 +214,33 @@ class Sidrena_Cijena_Admin_Save {
 
 		check_admin_referer( 'sidrena_cijena_save_catalog', 'sidrena_cijena_catalog_nonce' );
 
-		$json = isset( $_POST['sidrena_cijena_catalog_json'] ) ? wp_unslash( $_POST['sidrena_cijena_catalog_json'] ) : '[]'; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		Sidrena_Cijena_Catalog::instance()->save_from_json( is_string( $json ) ? $json : '[]' );
+		$json     = isset( $_POST['sidrena_cijena_catalog_json'] ) ? wp_unslash( $_POST['sidrena_cijena_catalog_json'] ) : '[]'; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$decoded  = json_decode( is_string( $json ) ? $json : '[]', true );
+		$decoded  = is_array( $decoded ) ? $decoded : array();
+		$attempts = 0;
+
+		foreach ( $decoded as $row ) {
+			if ( is_array( $row ) && '' !== trim( (string) ( $row['naziv'] ?? '' ) ) ) {
+				++$attempts;
+			}
+		}
+
+		$saved = Sidrena_Cijena_Catalog::instance()->save_from_json( is_string( $json ) ? $json : '[]' );
 
 		$upit = isset( $_POST['sidrena_cijena_upit_json'] ) ? wp_unslash( $_POST['sidrena_cijena_upit_json'] ) : '[]'; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		Sidrena_Cijena_Upit::instance()->save_from_json( is_string( $upit ) ? $upit : '[]' );
 
-		wp_safe_redirect( add_query_arg( array( 'page' => 'sidrena-cijena', 'tab' => 'proizvodi', 'updated' => '1' ), admin_url( 'admin.php' ) ) );
+		$query = array(
+			'page' => 'sidrena-cijena',
+			'tab'  => 'proizvodi',
+		);
+		if ( $attempts > 0 && array() === $saved ) {
+			$query['catalog_incomplete'] = '1';
+		} else {
+			$query['updated'] = '1';
+		}
+
+		wp_safe_redirect( add_query_arg( $query, admin_url( 'admin.php' ) ) );
 		exit;
 	}
 

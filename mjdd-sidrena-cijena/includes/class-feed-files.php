@@ -1370,6 +1370,53 @@ JS;
 	}
 
 	/**
+	 * Without a webshop feed, an empty outlet code has no HTML snapshot file.
+	 *
+	 * @param string $oznaka Outlet code.
+	 * @return bool
+	 */
+	public function needs_cjenik_outlets_index( $oznaka ) {
+		$oznaka = Sidrena_Cijena_Settings::instance()->normalize_oznaka( $oznaka );
+		if ( '' !== $oznaka ) {
+			return false;
+		}
+
+		$settings = Sidrena_Cijena_Settings::instance();
+
+		return $settings->is_multi_poslovnica() && ! $settings->publishes_webshop_feed();
+	}
+
+	/**
+	 * Links to each outlet cjenik page when the webshop table is not published.
+	 *
+	 * @return string
+	 */
+	public function cjenik_outlets_index_html() {
+		$html = '<div class="sidrena-cjenik sidrena-cjenik--outlet-index">';
+		$html .= '<p>' . esc_html__( 'Odaberite poslovnicu:', 'mjdd-sidrena-cijena' ) . '</p>';
+		$html .= '<ul class="sidrena-cjenik-outlets">';
+
+		foreach ( Sidrena_Cijena_Poslovnice::instance()->all() as $outlet ) {
+			$label = isset( $outlet['naziv'] ) ? trim( (string) $outlet['naziv'] ) : '';
+			if ( '' === $label ) {
+				$label = isset( $outlet['oznaka'] ) ? (string) $outlet['oznaka'] : '';
+			}
+			$code = isset( $outlet['oznaka'] ) ? (string) $outlet['oznaka'] : '';
+			if ( '' === $code ) {
+				continue;
+			}
+
+			$html .= '<li><a href="' . esc_url( $this->get_cjenik_url( $code ) ) . '">' . esc_html( $label ) . '</a></li>';
+		}
+
+		$html .= '</ul>';
+		$html .= '<p class="description">' . esc_html__( 'Tablicu cjenika u stranici ubacite shortcodeom [sidrena-cjenik oznaka="…"] s oznakom poslovnice.', 'mjdd-sidrena-cijena' ) . '</p>';
+		$html .= '</div>';
+
+		return $html;
+	}
+
+	/**
 	 * Table HTML from the generated file. Unknown or empty outlets stay empty and do not queue a rebuild.
 	 *
 	 * @param string $oznaka Outlet code.
@@ -1378,6 +1425,10 @@ JS;
 	 */
 	public function cjenik_snapshot_embed( $oznaka, $dom_id ) {
 		$oznaka = Sidrena_Cijena_Settings::instance()->normalize_oznaka( $oznaka );
+		if ( $this->needs_cjenik_outlets_index( $oznaka ) ) {
+			return $this->cjenik_outlets_index_html();
+		}
+
 		if ( '' !== $oznaka ) {
 			$outlet = Sidrena_Cijena_Poslovnice::instance()->get_by_oznaka( $oznaka );
 			if ( ! is_array( $outlet ) ) {

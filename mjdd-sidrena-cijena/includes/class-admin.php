@@ -170,7 +170,8 @@ class Sidrena_Cijena_Admin {
 		$tabs     = $this->get_tabs();
 		$settings = Sidrena_Cijena_Settings::instance();
 		$export   = Sidrena_Cijena_Export::instance();
-		$saved     = isset( $_GET['updated'] ) && '1' === $_GET['updated']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$saved              = isset( $_GET['updated'] ) && '1' === $_GET['updated']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$catalog_incomplete = isset( $_GET['catalog_incomplete'] ) && '1' === $_GET['catalog_incomplete']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$xml_ok    = isset( $_GET['sidrena_xml'] ) && '1' === $_GET['sidrena_xml']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$xml_fail  = isset( $_GET['sidrena_xml'] ) && '0' === $_GET['sidrena_xml']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$xml_empty = isset( $_GET['sidrena_xml'] ) && '2' === $_GET['sidrena_xml']; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -199,6 +200,10 @@ class Sidrena_Cijena_Admin {
 
 			<?php if ( $saved ) : ?>
 				<div class="notice notice-success is-dismissible"><p><?php echo esc_html__( 'Postavke su spremljene.', 'mjdd-sidrena-cijena' ); ?></p></div>
+			<?php endif; ?>
+
+			<?php if ( $catalog_incomplete ) : ?>
+				<div class="notice notice-warning is-dismissible"><p><?php echo esc_html__( 'Nijedan redak nije spremljen. Za svaku stavku upišite naziv, redovnu i baznu cijenu.', 'mjdd-sidrena-cijena' ); ?></p></div>
 			<?php endif; ?>
 
 			<?php if ( $xml_ok ) : ?>
@@ -526,14 +531,18 @@ class Sidrena_Cijena_Admin {
 	 * @param Sidrena_Cijena_Settings $settings Settings helper.
 	 */
 	private function render_cjenik_shortcode_docs( $settings ) {
-		$code = '[sidrena-cjenik]';
-		$this->render_url_box( __( 'Shortcode tablice', 'mjdd-sidrena-cijena' ), $code );
+		if ( $settings->publishes_webshop_feed() ) {
+			$code = '[sidrena-cjenik]';
+			$this->render_url_box( __( 'Shortcode tablice', 'mjdd-sidrena-cijena' ), $code );
+		}
 		if ( $settings->is_multi_poslovnica() ) {
 			foreach ( Sidrena_Cijena_Poslovnice::instance()->all() as $outlet ) {
 				$outlet_code = '[sidrena-cjenik oznaka="' . $outlet['oznaka'] . '"]';
 				$outlet_name = '' !== $outlet['naziv'] ? $outlet['naziv'] : $outlet['oznaka'];
 				$this->render_url_box( $outlet_name, $outlet_code );
 			}
+		} elseif ( ! $settings->publishes_webshop_feed() ) {
+			$this->render_url_box( __( 'Shortcode tablice (s oznakom poslovnice)', 'mjdd-sidrena-cijena' ), '[sidrena-cjenik oznaka="001"]' );
 		}
 	}
 
@@ -856,6 +865,7 @@ class Sidrena_Cijena_Admin {
 						'noCatalog'      => __( 'Prvo dodajte proizvode u kartici Proizvodi.', 'mjdd-sidrena-cijena' ),
 						'chooseOutlet'   => __( 'Odaberite poslovnicu u koju se uvozi.', 'mjdd-sidrena-cijena' ),
 						'removeOutlet'   => __( 'Ukloni poslovnicu', 'mjdd-sidrena-cijena' ),
+						'catalogRequired' => __( 'Svaki redak mora imati naziv, redovnu i baznu cijenu. Prazni retci se ne spremaju.', 'mjdd-sidrena-cijena' ),
 					),
 				)
 			);

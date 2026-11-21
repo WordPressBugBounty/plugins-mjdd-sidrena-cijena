@@ -795,7 +795,13 @@ class Sidrena_Cijena_Feed_Routes {
 			}
 		}
 
-		$snapshot = Sidrena_Cijena_Feed_Files::instance()->read_cjenik_snapshot( $oznaka );
+		$files = Sidrena_Cijena_Feed_Files::instance();
+		if ( $files->needs_cjenik_outlets_index( $oznaka ) ) {
+			$this->serve_cjenik_outlets_index_page();
+			return;
+		}
+
+		$snapshot = $files->read_cjenik_snapshot( $oznaka );
 		if ( null === $snapshot ) {
 			$this->schedule_public_rebuild();
 			$this->serve_cjenik_pending_page();
@@ -1012,6 +1018,46 @@ class Sidrena_Cijena_Feed_Routes {
 		echo '<h1>' . esc_html( $title ) . '</h1>';
 		echo '<p class="empty">' . esc_html__( 'Cjenik je prazan.', 'mjdd-sidrena-cijena' ) . '</p>';
 		echo '<p class="back"><a href="' . esc_url( Sidrena_Cijena_Feed_Files::instance()->get_cjenik_url() ) . '">' . esc_html__( 'Cjenik', 'mjdd-sidrena-cijena' ) . '</a></p>';
+		echo '</main></body></html>';
+		exit;
+	}
+
+	/**
+	 * Index of outlet cjenik pages when the webshop HTML file is not published.
+	 */
+	public function serve_cjenik_outlets_index_page() {
+		$shop    = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
+		$title   = Sidrena_Cijena_Settings::instance()->cjenik_page_title();
+		$files   = Sidrena_Cijena_Feed_Files::instance();
+
+		header( 'Content-Type: text/html; charset=utf-8' );
+		header( 'Cache-Control: public, max-age=300' );
+
+		echo '<!DOCTYPE html><html lang="hr"><head><meta charset="utf-8" />';
+		echo '<meta name="viewport" content="width=device-width, initial-scale=1" />';
+		echo '<title>' . esc_html( $shop . ' - ' . $title ) . '</title>';
+		wp_register_style(
+			'mjdd-sidrena-cijena-cjenik',
+			SIDRENA_CIJENA_URL . 'assets/css/cjenik.css',
+			array(),
+			SIDRENA_CIJENA_VERSION
+		);
+		wp_print_styles( 'mjdd-sidrena-cijena-cjenik' );
+		echo '</head><body><main>';
+		echo '<header class="cjenik-hero">';
+		echo '<p class="cjenik-kicker">' . esc_html( $shop ) . '</p>';
+		echo '<h1>' . esc_html( $title ) . '</h1>';
+		echo '</header>';
+		echo $files->cjenik_outlets_index_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in helper.
+		echo '<p class="back"><a href="' . esc_url( home_url( '/' ) ) . '">';
+		echo esc_html(
+			sprintf(
+				/* translators: %s: site title */
+				__( 'Natrag na %s', 'mjdd-sidrena-cijena' ),
+				$shop
+			)
+		);
+		echo '</a></p>';
 		echo '</main></body></html>';
 		exit;
 	}

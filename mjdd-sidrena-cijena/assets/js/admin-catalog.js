@@ -416,6 +416,13 @@
 			);
 		}
 
+		function catalogRowIncomplete(row) {
+			if (isBlankRow(row)) {
+				return false;
+			}
+			return !$.trim(row.naziv) || !$.trim(row.cijena_redovna) || !$.trim(row.sidrena_cijena);
+		}
+
 		function commitPage() {
 			var current = collect();
 			if (scoped) {
@@ -668,7 +675,7 @@
 			showUpit();
 		});
 
-		$form.on("submit", function () {
+		$form.on("submit", function (event) {
 			commitPage();
 			if (scoped) {
 				commitUpit();
@@ -676,6 +683,19 @@
 			} else {
 				$upitJson.val(JSON.stringify(collectUpit()));
 			}
+
+			var incomplete = false;
+			allRows.forEach(function (row) {
+				if (catalogRowIncomplete(row)) {
+					incomplete = true;
+				}
+			});
+			if (incomplete) {
+				event.preventDefault();
+				window.alert(i18n.catalogRequired || "Svaki redak mora imati naziv, redovnu i baznu cijenu.");
+				return;
+			}
+
 			$json.val(JSON.stringify(allRows));
 		});
 	}
